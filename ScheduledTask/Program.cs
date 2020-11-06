@@ -1,4 +1,4 @@
-﻿using ScheduledTask.Mapper;
+﻿using Core.Mapper;
 using Database;
 using Fetcher;
 using Microsoft.EntityFrameworkCore;

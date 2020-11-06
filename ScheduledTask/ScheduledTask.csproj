@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\database\Database.csproj" />
     <ProjectReference Include="..\fetcher\Fetcher.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
