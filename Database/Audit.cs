@@ -6,6 +6,7 @@ namespace Database
 {
     public class Audit
     {
+        //https://www.meziantou.net/entity-framework-core-history-audit-table.htm
         public int Id { get; set; }
         public string TableName { get; set; }
         public DateTime DateTime { get; set; }
