@@ -1,11 +1,11 @@
 # StackGamer
-## Creación de base de datos
-En la pestaña Consola del Administrador de paquetes, seleccionar como Proyecto predeterminado: "Database" y ejecutar los siguientes comandos:
+## Database creation
+In the Package Manager Console tab, select as Default Project: "Database" and execute the following commands:
 ```csharp
 Add-Migration InitialCreate
 Update-Database
- ```
-## Seteo de variables de configuración
-Copiar example.appsettings.json y cambiarle el nombre a appsettings.json
+```
+## Configuration variables
+Copy example.appsettings.json and rename it to appsettings.json
 
-Remplazar BaseUrl, GetProductByIdUrl y opcionalmente LogLevel
+Replace BaseUrl, GetProductByIdUrl and optionally LogLevel
