@@ -1,8 +1,5 @@
 ﻿using Database;
 using Fetcher;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Mapper
 {
@@ -18,10 +15,10 @@ namespace Core.Mapper
                 IdCategoria = productDTO.IdCategoria,
                 IdMarca = productDTO.IdMarca,
                 IdSubcategoria = productDTO.IdSubcategoria,
-                PrecioEspecial = productDTO.PrecioEspecial ?? 0 / 100,
-                PrecioEspecialAnterior = productDTO.PrecioEspecial ?? 0 / 100,
-                PrecioLista = productDTO.PrecioEspecial ?? 0 / 100,
-                PrecioListaAnterior = productDTO.PrecioListaAnterior ?? 0 / 100
+                PrecioEspecial = (productDTO.PrecioEspecial ?? 0) / 100,
+                PrecioEspecialAnterior = (productDTO.PrecioEspecialAnterior ?? 0) / 100,
+                PrecioLista = (productDTO.PrecioLista ?? 0) / 100,
+                PrecioListaAnterior = (productDTO.PrecioListaAnterior ?? 0) / 100
             };
             return prod;
         }
