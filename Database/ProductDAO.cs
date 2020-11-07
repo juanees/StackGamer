@@ -7,7 +7,10 @@ namespace Database
     {
         [Key]
         public int IdProducto { get; set; }
+
         public string Nombre { get; set; }
+
+        public int CodigoProducto { get; set; }
 
         public int IdCategoria { get; set; }
 

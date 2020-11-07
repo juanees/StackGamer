@@ -31,9 +31,12 @@ namespace Tests.UnitTests.Mapper
         [Test]
         public void MapDtoToDao_IsWorkingCorrectly()
         {
-            var result = _productDTO.MapDtoToDao();
+            int codeProd = int.MaxValue;
+            var result = _productDTO.MapDtoToDao(codeProd);
 
             Assert.AreEqual(result.Nombre, _productDTO.Nombre);
+
+            Assert.AreEqual(result.CodigoProducto, codeProd);
 
             Assert.IsFalse(result.Vendible);
 
