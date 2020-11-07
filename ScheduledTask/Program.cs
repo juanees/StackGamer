@@ -5,18 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Extensions.Logging;
 using Shared;
 using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace ScheduledTask
 {
     class Program
     {
+        private static ILogger<Program> logger;
         static async Task Main(string[] args)
         {
-            ILogger logger;
             //https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
 
             #region Dependency Injection and Configuration files
@@ -66,6 +67,7 @@ namespace ScheduledTask
             {
                 logger.LogInformation($"No se encontró un producto para el id {idProd}");
             }
+            LogManager.Shutdown();
             Console.ReadLine();
         }
 
@@ -78,9 +80,14 @@ namespace ScheduledTask
 
             var loggingOption = new LoggingOption();
             configuration.Bind("Logging", loggingOption);
-
-            services.AddLogging(configure => configure.AddConsole())
-                 .Configure<LoggerFilterOptions>(options => options.MinLevel = loggingOption.LogLevel)                 
+            
+            services/*.AddLogging(configure => configure.AddConsole())*/
+                 //.Configure<LoggerFilterOptions>(options => options.MinLevel = loggingOption.LogLevel)
+                 .AddLogging(logBuilder=> {
+                     logBuilder.ClearProviders();
+                     logBuilder.SetMinimumLevel(loggingOption.LogLevel);
+                     logBuilder.AddNLog(configuration);
+                 })
                  .AddTransient<Thief>()                 
                  .AddTransient<StackGameContext>()
                  .AddHttpClient("stack-gamer", c =>
