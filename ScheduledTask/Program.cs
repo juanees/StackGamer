@@ -48,7 +48,7 @@ namespace ScheduledTask
                 {
                     using var db = serviceProvider.GetService<StackGameContext>();
 
-                    db.Add(prod.MapDtoToDao());
+                    db.Add(prod.MapDtoToDao(int.MaxValue));
                     db.SaveChanges();
 
                     logger.LogInformation($"Parece que funcionó!");
