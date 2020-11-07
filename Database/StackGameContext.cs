@@ -17,22 +17,6 @@ namespace Database
 
         public override int SaveChanges()
         {
-            //var entries = ChangeTracker
-            //    .Entries()
-            //    .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
-
-            //foreach (var entityEntry in entries)
-            //{
-            //    ((BaseEntity)entityEntry.Entity).UpdatedDate = DateTime.Now;
-
-            //    if (entityEntry.State == EntityState.Added)
-            //    {
-            //        ((BaseEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
-            //    }
-            //}
-
-            //return base.SaveChanges();
-
             var auditEntries = OnBeforeSaveChanges();
 
             var entries = ChangeTracker
@@ -56,7 +40,7 @@ namespace Database
             return result;
         }
 
-        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             var auditEntries = OnBeforeSaveChanges();
 
@@ -90,8 +74,10 @@ namespace Database
                 if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                     continue;
 
-                var auditEntry = new AuditEntry(entry);
-                auditEntry.TableName = entry.Metadata.GetTableName();
+                var auditEntry = new AuditEntry(entry)
+                {
+                    TableName = entry.Metadata.GetTableName()
+                };
                 auditEntries.Add(auditEntry);
 
                 foreach (var property in entry.Properties)

@@ -14,4 +14,7 @@
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Fetcher\Fetcher.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UnitTests\Database\" />
+  </ItemGroup>
 </Project>

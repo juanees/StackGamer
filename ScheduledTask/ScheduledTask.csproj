@@ -25,24 +25,12 @@
     <ProjectReference Include="..\Fetcher\Fetcher.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <Compile Update="nlog.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>nlog.config</DependentUpon>
-    </Compile>
+    <None Update="nlog.config" CopyToOutputDirectory="Always" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="nlog.config">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>nlog.Designer.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
-
 </Project>

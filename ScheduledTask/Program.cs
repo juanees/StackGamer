@@ -1,4 +1,4 @@
-﻿using Core.Mapper;
+using Core.Mapper;
 using Database;
 using Fetcher;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +9,13 @@ using NLog;
 using NLog.Extensions.Logging;
 using Shared;
 using System;
-using System.Threading.Tasks;
 
 namespace ScheduledTask
 {
     class Program
     {
         private static ILogger<Program> logger;
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             //https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
 
@@ -33,29 +32,27 @@ namespace ScheduledTask
             #endregion
 
             logger = serviceProvider.GetService<ILogger<Program>>();
-            var idProd = 1001;
 
-            //var thief = serviceProvider.GetService<Thief>();
-            //var prod = await thief.GetProductById(idProd);
+            var idProd = 1001;
             ProductDTO prod = null;
 
             //TODO:(1)Programar logica de actualización
             if (!(prod is null))
             {
-                logger.LogInformation($"Se encontró el siguien producto: {prod.Nombre} - {prod.Codigo}");
+                logger.LogInformation($"The following product was found: { prod.Nombre} - {prod.Codigo}");
 
                 try
                 {
                     using var db = serviceProvider.GetService<StackGameContext>();
 
-                    db.Add(prod.MapDtoToDao(int.MaxValue));
+                    db.Add(prod.MapDtoToDao(idProd));
                     db.SaveChanges();
 
-                    logger.LogInformation($"Parece que funcionó!");
+                    logger.LogInformation($"It seems it worked!");
                 }
                 catch (DbUpdateException dbe)
                 {
-                    logger.LogError(dbe, "Error realizando operaciones en la base de dato");
+                    logger.LogError(dbe, "Error performing operations on the database");
 
                 }
                 catch (Exception e)
@@ -65,7 +62,7 @@ namespace ScheduledTask
             }
             else
             {
-                logger.LogInformation($"No se encontró un producto para el id {idProd}");
+                logger.LogInformation($"No product found for id: {idProd}");
             }
             LogManager.Shutdown();
             Console.ReadLine();
@@ -80,21 +77,20 @@ namespace ScheduledTask
 
             var loggingOption = new LoggingOption();
             configuration.Bind("Logging", loggingOption);
-            
-            services/*.AddLogging(configure => configure.AddConsole())*/
-                 //.Configure<LoggerFilterOptions>(options => options.MinLevel = loggingOption.LogLevel)
-                 .AddLogging(logBuilder=> {
-                     logBuilder.ClearProviders();
-                     logBuilder.SetMinimumLevel(loggingOption.LogLevel);
-                     logBuilder.AddNLog(configuration);
-                 })
-                 .AddTransient<Thief>()                 
-                 .AddTransient<StackGameContext>()
-                 .AddHttpClient("stack-gamer", c =>
-                 {
-                     c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);
-                     c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.185 Mobile Safari/537.36");
-                 });
+
+            services.AddLogging(logBuilder =>
+            {
+                logBuilder.ClearProviders();
+                logBuilder.SetMinimumLevel(loggingOption.LogLevel);
+                logBuilder.AddNLog(configuration);
+            })
+                .AddTransient<Thief>()
+                .AddTransient<StackGameContext>()
+                .AddHttpClient("stack-gamer", c =>
+                {
+                    c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);
+                    c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.185 Mobile Safari/537.36");
+                });
         }
     }
 }
