@@ -50,31 +50,31 @@ namespace Tests.UnitTests.Fetcher
             //Assert
             Assert.NotNull(result);
 
-            Assert.AreEqual(result.Nombre, "Parlantes Edifier X100 2.1 ");
+            Assert.AreEqual(result.Name, "Parlantes Edifier X100 2.1 ");
 
-            Assert.IsNotNull(result.Vendible);
+            Assert.IsNotNull(result.Salable);
 
-            Assert.AreEqual(result.Vendible, 0);
+            Assert.AreEqual(result.Salable, 0);
 
-            Assert.AreEqual(result.Codigo, "SIN STOCK");
+            Assert.AreEqual(result.Code, "SIN STOCK");
 
-            Assert.AreEqual(result.IdCategoria, 5);
+            Assert.AreEqual(result.IdCategory, 5);
 
-            Assert.AreEqual(result.IdMarca, 130);
+            Assert.AreEqual(result.IdBrand, 130);
 
-            Assert.AreEqual(result.IdSubcategoria, 65);
+            Assert.AreEqual(result.IdSubCategory, 65);
 
-            Assert.AreEqual(result.PrecioEspecial , 5409);
+            Assert.AreEqual(result.SpecialPrice , 5409);
 
-            Assert.IsNull(result.PrecioEspecialAnterior);
+            Assert.IsNull(result.PreviousSpecialPrice);
 
-            Assert.AreEqual(result.PrecioEspecialAnterior , null);
+            Assert.AreEqual(result.PreviousSpecialPrice , null);
 
-            Assert.AreEqual(result.PrecioLista, 5778);
+            Assert.AreEqual(result.ListPrice, 5778);
 
-            Assert.IsNull(result.PrecioListaAnterior);
+            Assert.IsNull(result.PreviousListPrice);
 
-            Assert.AreEqual(result.PrecioListaAnterior , null);
+            Assert.AreEqual(result.PreviousListPrice , null);
 
         }
 

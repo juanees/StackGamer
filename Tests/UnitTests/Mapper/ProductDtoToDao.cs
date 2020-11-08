@@ -1,6 +1,7 @@
 ﻿using Core.Mapper;
 using Fetcher;
 using Fetcher.Model;
+using Fetcher.Model.Thief;
 using NUnit.Framework;
 
 namespace Tests.UnitTests.Mapper
@@ -16,16 +17,16 @@ namespace Tests.UnitTests.Mapper
         {
             _productDTO = new ProductDTO()
             {
-                Nombre = "  test TEST ñ 🤡 ",
-                Vendible = null,
-                Codigo = "COD 1",
-                IdCategoria = 1,
-                IdMarca = 2,
-                IdSubcategoria = 3,
-                PrecioEspecial = 100,
-                PrecioEspecialAnterior = 200,
-                PrecioLista = null,
-                PrecioListaAnterior = 0
+                Name = "  test TEST ñ 🤡 ",
+                Salable = null,
+                Code = "COD 1",
+                IdCategory = 1,
+                IdBrand = 2,
+                IdSubCategory = 3,
+                SpecialPrice = 100,
+                PreviousSpecialPrice = 200,
+                ListPrice = null,
+                PreviousListPrice = 0
             };
         }
 
@@ -35,27 +36,25 @@ namespace Tests.UnitTests.Mapper
             int codeProd = int.MaxValue;
             var result = _productDTO.MapDtoToDao(codeProd);
 
-            Assert.AreEqual(result.Nombre, _productDTO.Nombre);
+            Assert.AreEqual(result.Name, _productDTO.Name);
 
-            Assert.AreEqual(result.CodigoProducto, codeProd);
+            Assert.AreEqual(result.ExternalIdProduct, codeProd);
 
-            Assert.IsFalse(result.Vendible);
+            Assert.IsFalse(result.Salable);
 
-            Assert.AreEqual(result.Codigo, _productDTO.Codigo);
+            Assert.AreEqual(result.Code, _productDTO.Code);
 
-            Assert.AreEqual(result.IdCategoria, _productDTO.IdCategoria);
+            Assert.AreEqual(result.BrandId, _productDTO.IdBrand);
 
-            Assert.AreEqual(result.IdMarca, _productDTO.IdMarca);
+            Assert.AreEqual(result.CategoryId, _productDTO.IdSubCategory);
 
-            Assert.AreEqual(result.IdSubcategoria, _productDTO.IdSubcategoria);
+            Assert.AreEqual(result.SpecialPrice * 100, _productDTO.SpecialPrice);
 
-            Assert.AreEqual(result.PrecioEspecial * 100, _productDTO.PrecioEspecial);
+            Assert.AreEqual(result.PreviousSpecialPrice * 100, _productDTO.PreviousSpecialPrice);
 
-            Assert.AreEqual(result.PrecioEspecialAnterior * 100, _productDTO.PrecioEspecialAnterior);
+            Assert.AreEqual(result.ListPrice, 0);
 
-            Assert.AreEqual(result.PrecioLista, 0);
-
-            Assert.AreEqual(result.PrecioListaAnterior * 100, _productDTO.PrecioListaAnterior);
+            Assert.AreEqual(result.PreviousListPrice * 100, _productDTO.PreviousListPrice);
         }
     }
 }

@@ -39,8 +39,7 @@ namespace ScheduledTask
             var scraper = serviceProvider.GetService<Scraper>();
 
             var categories = await scraper.GetCategoriesAndProducts();
-
-            
+                        
             Console.ReadLine();
             LogManager.Shutdown();
         }
@@ -55,12 +54,13 @@ namespace ScheduledTask
             var loggingOption = new LoggingOption();
             configuration.Bind("Logging", loggingOption);
 
-            services.AddLogging(logBuilder =>
-            {
-                logBuilder.ClearProviders();
-                logBuilder.SetMinimumLevel(loggingOption.LogLevel);
-                logBuilder.AddNLog(configuration);
-            })
+            services
+                .AddLogging(logBuilder =>
+                {
+                    logBuilder.ClearProviders();
+                    logBuilder.SetMinimumLevel(loggingOption.LogLevel);
+                    logBuilder.AddNLog(configuration);
+                })
                 .AddTransient<Thief>()
                 .AddTransient<StackGameContext>()
                 .AddTransient<Scraper>()

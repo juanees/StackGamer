@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Fetcher.Model.Scraper;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using PuppeteerSharp;
-using Shared.Model;
 using Shared.Options;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,9 @@ namespace Fetcher
             stackGamerOptions = _stackGamerOptions;
         }
 
-        public async Task<List<Category>> GetCategoriesAndProducts()
+        public async Task<List<CategoryDTO>> GetCategoriesAndProducts()
         {
-            List<Category> categories = new List<Category>();
+            List<CategoryDTO> categories = new List<CategoryDTO>();
             logger.LogInformation("Scraping web..");
             logger.LogInformation("Downloading browser if necessary");
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
@@ -75,12 +76,12 @@ namespace Fetcher
                 try
                 {
                     var scrappedCategory = scrappedCat.ToObject<ScrappedCategory>();
-                    var validation = urlValidation.Match(scrappedCategory.url);
+                    var validation = urlValidation.Match(scrappedCategory.Url);
                     if (validation.Success)
                     {
                         if (validation.Groups.Count > 0 && int.TryParse(validation.Groups[1].Value, out int categoryId))
                         {
-                            var cat = new Category() { CategoryId = categoryId, Description = scrappedCategory.desc.Trim(), Url = new Uri(scrappedCategory.url) };
+                            var cat = new CategoryDTO() { CategoryId = categoryId, Description = scrappedCategory.Description.Trim(), Url = new Uri(scrappedCategory.Url) };
                             categories.Add(cat);
                             logger.LogTrace("Category scrapped! {0} - {1}", cat.CategoryId, cat.Description);
                         }
@@ -118,12 +119,12 @@ namespace Fetcher
                     try
                     {
                         var scrappedProduct = scrappedProd.ToObject<ScrappedProduct>();
-                        var validation = productValidation.Match(scrappedProduct.url);
+                        var validation = productValidation.Match(scrappedProduct.Url);
                         if (validation.Success)
                         {
                             if (validation.Groups.Count > 0 && int.TryParse(validation.Groups[1].Value, out int productId))
                             {
-                                var prod = new Shared.Model.Product() { ProductId = productId, Name = scrappedProduct.name.Trim(), Url = new Uri(scrappedProduct.url) };
+                                var prod = new ProductDTO() { ProductId = productId, Name = scrappedProduct.Name.Trim(), Url = new Uri(scrappedProduct.Url) };
                                 cat.Products.Add(prod);
                                 logger.LogTrace("Product scrapped: {0} - {1}", prod.ProductId, prod.Name);
                             }
@@ -154,20 +155,26 @@ namespace Fetcher
             Random rnd = new Random();
             var ms = rnd.Next(500, 2500);
             TimeSpan waitTime = new TimeSpan(0, 0, 0, 0, ms);
-            logger.LogInformation("Wating {0} seconds between requests", waitTime.TotalSeconds);
+            logger.LogTrace("Wating {0} seconds between requests", waitTime.TotalSeconds);
             await Task.Delay(Convert.ToInt32(waitTime.TotalMilliseconds));
         }
 
         #region Support Classes
         private class ScrappedCategory
         {
-            public string desc { get; set; }
-            public string url { get; set; }
+            [JsonProperty("desc")]
+            public string Description { get; set; }
+            
+            [JsonProperty("url")]
+            public string Url { get; set; }
         }
         private class ScrappedProduct
         {
-            public string url { get; set; }
-            public string name { get; set; }
+            [JsonProperty("url")]
+            public string Url { get; set; }
+            
+            [JsonProperty("name")]
+            public string Name { get; set; }
         }
         #endregion
     }

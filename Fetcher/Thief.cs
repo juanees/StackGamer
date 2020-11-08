@@ -1,4 +1,5 @@
 ﻿using Fetcher.Model;
+using Fetcher.Model.Thief;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared;

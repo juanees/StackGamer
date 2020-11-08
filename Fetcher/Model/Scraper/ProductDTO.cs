@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Model
+namespace Fetcher.Model.Scraper
 {
-    public class Product
+    public class ProductDTO
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
