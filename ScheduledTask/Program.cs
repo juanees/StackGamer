@@ -16,7 +16,7 @@ namespace ScheduledTask
     {
         private static ILogger<Program> logger;
         static void Main(string[] args)
-        {
+        {             
             //https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
 
             #region Dependency Injection and Configuration files
@@ -32,6 +32,8 @@ namespace ScheduledTask
             #endregion
 
             logger = serviceProvider.GetService<ILogger<Program>>();
+
+            logger.LogInformation("Aplicación iniciada");
 
             var idProd = 1001;
             ProductDTO prod = null;
