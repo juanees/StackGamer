@@ -1,6 +1,7 @@
 using Core.Mapper;
 using Database;
 using Fetcher;
+using Fetcher.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,14 +9,16 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
 using Shared;
+using Shared.Options;
 using System;
+using System.Threading.Tasks;
 
 namespace ScheduledTask
 {
     class Program
     {
         private static ILogger<Program> logger;
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
 
@@ -32,40 +35,14 @@ namespace ScheduledTask
             #endregion
 
             logger = serviceProvider.GetService<ILogger<Program>>();
+            logger.LogInformation("Scrapping data");
+            var scraper = serviceProvider.GetService<Scraper>();
 
-            var idProd = 1001;
-            ProductDTO prod = null;
+            var categories = await scraper.GetCategoriesAndProducts();
 
-            //TODO:(1)Programar logica de actualización
-            if (!(prod is null))
-            {
-                logger.LogInformation($"The following product was found: { prod.Nombre} - {prod.Codigo}");
-
-                try
-                {
-                    using var db = serviceProvider.GetService<StackGameContext>();
-
-                    db.Add(prod.MapDtoToDao(idProd));
-                    db.SaveChanges();
-
-                    logger.LogInformation($"It seems it worked!");
-                }
-                catch (DbUpdateException dbe)
-                {
-                    logger.LogError(dbe, "Error performing operations on the database");
-
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e, "Error ");
-                }
-            }
-            else
-            {
-                logger.LogInformation($"No product found for id: {idProd}");
-            }
-            LogManager.Shutdown();
+            
             Console.ReadLine();
+            LogManager.Shutdown();
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
@@ -86,6 +63,7 @@ namespace ScheduledTask
             })
                 .AddTransient<Thief>()
                 .AddTransient<StackGameContext>()
+                .AddTransient<Scraper>()
                 .AddHttpClient("stack-gamer", c =>
                 {
                     c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);

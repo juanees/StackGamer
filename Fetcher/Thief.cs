@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Fetcher.Model;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared;
+using Shared.Options;
 using System;
 using System.Net.Http;
 using System.Text.Json;

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using Shared.Options;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -16,16 +17,16 @@ namespace Tests.UnitTests.Fetcher
     public class Thief
     {
 
-        private IOptions<Shared.StackGamerOption> someOptions;
+        private IOptions<StackGamerOption> someOptions;
 
 
 
         [SetUp]
         public void SetUp()
         {
-            someOptions = Options.Create(new Shared.StackGamerOption()
+            someOptions = Options.Create(new StackGamerOption()
             {
-                Urls = new Shared.Urls()
+                Urls = new Urls()
                 {
                     BaseUrl = "https://test.com",
                     GetProductByIdUrl = "/test/get_product_by_id_url?id_producto="
