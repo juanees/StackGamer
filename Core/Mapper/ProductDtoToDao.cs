@@ -1,5 +1,7 @@
 ﻿using Database;
+using Database.Model;
 using Fetcher.Model;
+using Fetcher.Model.Thief;
 
 namespace Core.Mapper
 {
@@ -9,17 +11,16 @@ namespace Core.Mapper
         {
             var prod = new ProductDAO()
             {
-                Nombre = productDTO.Nombre,
-                CodigoProducto = prodCode,
-                Vendible = productDTO.Vendible == 1,
-                Codigo = productDTO.Codigo,
-                IdCategoria = productDTO.IdCategoria,
-                IdMarca = productDTO.IdMarca,
-                IdSubcategoria = productDTO.IdSubcategoria,
-                PrecioEspecial = (productDTO.PrecioEspecial ?? 0) / 100,
-                PrecioEspecialAnterior = (productDTO.PrecioEspecialAnterior ?? 0) / 100,
-                PrecioLista = (productDTO.PrecioLista ?? 0) / 100,
-                PrecioListaAnterior = (productDTO.PrecioListaAnterior ?? 0) / 100
+                Name = productDTO.Name,
+                ExternalIdProduct = prodCode,
+                Salable = productDTO.Salable == 1,
+                Code = productDTO.Code,
+                BrandId = productDTO.IdBrand,
+                CategoryId = productDTO.IdSubCategory,
+                SpecialPrice = (productDTO.SpecialPrice ?? 0) / 100,
+                PreviousSpecialPrice = (productDTO.PreviousSpecialPrice ?? 0) / 100,
+                ListPrice = (productDTO.ListPrice ?? 0) / 100,
+                PreviousListPrice = (productDTO.PreviousListPrice ?? 0) / 100
             };
             return prod;
         }

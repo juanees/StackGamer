@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Model
+namespace Fetcher.Model.Scraper
 {
-    public class Category
+    public class CategoryDTO
     {
         public int CategoryId { get; set; }
         public string Description { get; set; }
         public Uri Url { get; set; }
-        public List<Product> Products { get; set; } = new List<Product>();
+        public List<ProductDTO> Products { get; set; } = new List<ProductDTO>();
     }
 }

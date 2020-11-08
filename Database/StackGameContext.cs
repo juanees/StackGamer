@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Database.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Database
 {
     public class StackGameContext : DbContext
     {
+        public DbSet<CategoryDAO> Categories { get; set; }
         public DbSet<ProductDAO> Products { get; set; }
         public DbSet<Audit> Audits { get; set; }
 

@@ -1,26 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Fetcher.Model
+namespace Fetcher.Model.Thief
 {
     public class ProductDTO
     {
-        public class Imagene
+        public class Image
         {
             [JsonPropertyName("listaImagenes")]
-            public List<int?> ListaImagenes { get; set; }
+            public List<int?> ImagesList { get; set; }
 
             [JsonPropertyName("nombre")]
-            public string Nombre { get; set; }
+            public string Name { get; set; }
         }
 
-        public class Nivele
+        public class Level
         {
             [JsonPropertyName("nivel_cpu")]
-            public int? NivelCpu { get; set; }
+            public int? CpuLevel { get; set; }
 
             [JsonPropertyName("nivel_gpu")]
-            public int? NivelGpu { get; set; }
+            public int? GpuLevel { get; set; }
         }
         [JsonPropertyName("coins")]
         public int? Coins { get; set; }
@@ -32,46 +32,46 @@ namespace Fetcher.Model
         public int? CoinsSale { get; set; }
 
         [JsonPropertyName("destacado")]
-        public int? Destacado { get; set; }
+        public int? Outstanding { get; set; }
 
         [JsonPropertyName("nombre")]
-        public string Nombre { get; set; }
+        public string Name { get; set; }
 
         [JsonPropertyName("id_categoria")]
-        public int IdCategoria { get; set; }
+        public int IdCategory { get; set; }
 
         [JsonPropertyName("id_subcategoria")]
-        public int IdSubcategoria { get; set; }
+        public int IdSubCategory { get; set; }
 
         [JsonPropertyName("garantia")]
-        public string Garantia { get; set; }
+        public string Warranty { get; set; }
 
         [JsonPropertyName("id_marca")]
-        public int IdMarca { get; set; }
+        public int IdBrand { get; set; }
 
         [JsonPropertyName("precioEspecial")]
-        public int? PrecioEspecial { get; set; }
+        public int? SpecialPrice { get; set; }
 
         [JsonPropertyName("precioLista")]
-        public int? PrecioLista { get; set; }
+        public int? ListPrice { get; set; }
 
         [JsonPropertyName("precioListaAnterior")]
-        public int? PrecioListaAnterior { get; set; }
+        public int? PreviousListPrice { get; set; }
 
         [JsonPropertyName("precioEspecialAnterior")]
-        public int? PrecioEspecialAnterior { get; set; }
+        public int? PreviousSpecialPrice { get; set; }
 
         [JsonPropertyName("imagenes")]
-        public List<Imagene> Imagenes { get; set; }
+        public List<Image> Images { get; set; }
 
         [JsonPropertyName("vendible")]
-        public int? Vendible { get; set; }
+        public int? Salable { get; set; }
 
         [JsonPropertyName("codigo")]
-        public string Codigo { get; set; }
+        public string Code { get; set; }
 
         [JsonPropertyName("niveles")]
-        public Nivele Niveles { get; set; }
+        public Level Levels { get; set; }
 
         [JsonPropertyName("reviews")]
         public object Reviews { get; set; }
