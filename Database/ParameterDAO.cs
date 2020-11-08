@@ -8,14 +8,14 @@ namespace Database
     public class ParameterDAO : BaseEntity
     {
         [Key]
-        public int IdParametro { get; set; }
+        public int ParameterId { get; set; }
 
         public string Key { get; set; }
 
-        public string Nombre { get; set; }
-        
-        public string Descripcion { get; set; }
+        public string Name { get; set; }
 
-        public string Valor { get; set; }
+        public string Value { get; set; }
+
+        public string Description { get; set; }        
     }
 }
