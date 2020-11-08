@@ -1,5 +1,6 @@
 ﻿using Core.Mapper;
 using Fetcher;
+using Fetcher.Model;
 using NUnit.Framework;
 
 namespace Tests.UnitTests.Mapper

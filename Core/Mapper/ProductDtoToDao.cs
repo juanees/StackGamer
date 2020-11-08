@@ -1,5 +1,5 @@
 ﻿using Database;
-using Fetcher;
+using Fetcher.Model;
 
 namespace Core.Mapper
 {

@@ -8,6 +8,9 @@
 [Dd]atabase/[Mm]igrations
 appsettings.json
 
+#puppeteer-sharp
+.local-chromium
+
 # User-specific files
 *.rsuser
 *.suo
