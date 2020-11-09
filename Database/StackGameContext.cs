@@ -13,10 +13,18 @@ namespace Database
         public DbSet<CategoryDAO> Categories { get; set; }
         public DbSet<ProductDAO> Products { get; set; }
         public DbSet<Audit> Audits { get; set; }
-        public DbSet<ParameterDAO> ParameterDAO { get; set; }
+        public DbSet<ParameterDAO> Parameters { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=../Database/stack-game.db");
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        {
+            //modelBuilder.Entity<ParameterDAO>().HasData(
+            //    new ParameterDAO() { },
+            //    new ParameterDAO() { });
+        }
 
         public override int SaveChanges()
         {
@@ -161,7 +169,6 @@ namespace Database
     }
 }
 /*
- * Install-Package Microsoft.EntityFrameworkCore.Tools
  * Add-Migration InitialCreate
  * Update-Database
  */
