@@ -9,12 +9,12 @@ namespace Shared.Options
     public class StackGamerOption
     {
         public Urls Urls { get; set; }
-        
     }
 
     public class Urls
     {
         public string BaseUrl { get; set; }
+
         public string GetProductByIdUrl { get; set; }
 
         public string CategoriesUrl { get; set; }

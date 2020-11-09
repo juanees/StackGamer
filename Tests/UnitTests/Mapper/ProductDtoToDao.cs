@@ -18,11 +18,11 @@ namespace Tests.UnitTests.Mapper
             _productDTO = new ProductDTO()
             {
                 Name = "  test TEST ñ 🤡 ",
-                Salable = null,
+                Saleable = null,
                 Code = "COD 1",
-                IdCategory = 1,
-                IdBrand = 2,
-                IdSubCategory = 3,
+                CategoryId = 1,
+                BrandId = 2,
+                SubCategoryId = 3,
                 SpecialPrice = 100,
                 PreviousSpecialPrice = 200,
                 ListPrice = null,
@@ -38,15 +38,15 @@ namespace Tests.UnitTests.Mapper
 
             Assert.AreEqual(result.Name, _productDTO.Name);
 
-            Assert.AreEqual(result.ExternalIdProduct, codeProd);
+            Assert.AreEqual(result.ExternalProductId, codeProd);
 
-            Assert.IsFalse(result.Salable);
+            Assert.IsFalse(result.Saleable);
 
             Assert.AreEqual(result.Code, _productDTO.Code);
 
-            Assert.AreEqual(result.BrandId, _productDTO.IdBrand);
+            Assert.AreEqual(result.BrandId, _productDTO.BrandId);
 
-            Assert.AreEqual(result.CategoryId, _productDTO.IdSubCategory);
+            Assert.AreEqual(result.CategoryId, _productDTO.SubCategoryId);
 
             Assert.AreEqual(result.SpecialPrice * 100, _productDTO.SpecialPrice);
 

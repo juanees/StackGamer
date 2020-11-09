@@ -16,14 +16,16 @@ namespace Fetcher
     {
         private readonly ILogger logger;
         private readonly IOptions<StackGamerOption> stackGamerOptions;
+        private readonly ILoggerFactory loggerFactory;
 
         private readonly string CATEGORIES_URL_VALIDATION_REGEX = @"\/index.php\?seccion=3&cate=([0-9]+)";
         private readonly string PRODUCT_ID_FROM_URL_REGEX = @"\/producto\/[a-zA-Z0-9_]+_([0-9]+)\?";
 
-        public Scraper(IOptions<StackGamerOption> _stackGamerOptions, ILogger<Scraper> _logger)
+        public Scraper(IOptions<StackGamerOption> _stackGamerOptions, ILogger<Scraper> _logger, ILoggerFactory _loggerFactory)
         {
             logger = _logger;
             stackGamerOptions = _stackGamerOptions;
+            loggerFactory = _loggerFactory;
         }
 
         public async Task<List<CategoryDTO>> GetCategoriesAndProducts()
@@ -36,9 +38,8 @@ namespace Fetcher
             var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true
-            });
+            }, loggerFactory);
             using var page = await browser.NewPageAsync();
-
 
             await page.GoToAsync(stackGamerOptions.Value.Urls.CategoriesUrl);
 
@@ -50,7 +51,6 @@ namespace Fetcher
             var categoriesSelector = "#contenidoCategorias > ul > li";
             var linkSelector = "ul > li > a";
             await page.WaitForSelectorAsync(resultsSelector);
-
 
             var scrappedCategories = await page.EvaluateFunctionAsync(@"(categoriesSelector,linkSelector) => {
                 var elList = document.querySelectorAll(categoriesSelector)

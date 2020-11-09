@@ -38,16 +38,16 @@ namespace Fetcher.Model.Thief
         public string Name { get; set; }
 
         [JsonPropertyName("id_categoria")]
-        public int IdCategory { get; set; }
+        public int CategoryId { get; set; }
 
         [JsonPropertyName("id_subcategoria")]
-        public int IdSubCategory { get; set; }
+        public int SubCategoryId { get; set; }
 
         [JsonPropertyName("garantia")]
         public string Warranty { get; set; }
 
         [JsonPropertyName("id_marca")]
-        public int IdBrand { get; set; }
+        public int BrandId { get; set; }
 
         [JsonPropertyName("precioEspecial")]
         public int? SpecialPrice { get; set; }
@@ -65,7 +65,7 @@ namespace Fetcher.Model.Thief
         public List<Image> Images { get; set; }
 
         [JsonPropertyName("vendible")]
-        public int? Salable { get; set; }
+        public int? Saleable { get; set; }
 
         [JsonPropertyName("codigo")]
         public string Code { get; set; }
@@ -83,6 +83,6 @@ namespace Fetcher.Model.Thief
         public object Sale { get; set; }
 
         [JsonPropertyName("incluidos")]
-        public object Incluidos { get; set; }
+        public object Included { get; set; }
     }
 }
