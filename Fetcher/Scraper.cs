@@ -83,7 +83,7 @@ namespace Fetcher
                         {
                             var cat = new CategoryDTO() { CategoryId = categoryId, Description = scrappedCategory.Description.Trim(), Url = new Uri(scrappedCategory.Url) };
                             categories.Add(cat);
-                            logger.LogTrace("Category scrapped! {0} - {1}", cat.CategoryId, cat.Description);
+                            logger.LogTrace("Category scrapped: {0} - {1}", cat.CategoryId, cat.Description);
                         }
                         else
                             logger.LogWarning("Link not valid: {0}", scrappedCat);
