@@ -13,6 +13,7 @@ namespace Database
         public DbSet<CategoryDAO> Categories { get; set; }
         public DbSet<ProductDAO> Products { get; set; }
         public DbSet<Audit> Audits { get; set; }
+        public DbSet<ParameterDAO> ParameterDAO { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=../Database/stack-game.db");
