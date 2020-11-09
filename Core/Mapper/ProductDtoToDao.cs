@@ -12,11 +12,11 @@ namespace Core.Mapper
             var prod = new ProductDAO()
             {
                 Name = productDTO.Name,
-                ExternalIdProduct = prodCode,
-                Salable = productDTO.Salable == 1,
+                ExternalProductId = prodCode,
+                Saleable = productDTO.Saleable == 1,
                 Code = productDTO.Code,
-                BrandId = productDTO.IdBrand,
-                CategoryId = productDTO.IdSubCategory,
+                BrandId = productDTO.BrandId,
+                CategoryId = productDTO.SubCategoryId,
                 SpecialPrice = (productDTO.SpecialPrice ?? 0) / 100,
                 PreviousSpecialPrice = (productDTO.PreviousSpecialPrice ?? 0) / 100,
                 ListPrice = (productDTO.ListPrice ?? 0) / 100,

@@ -52,17 +52,17 @@ namespace Tests.UnitTests.Fetcher
 
             Assert.AreEqual(result.Name, "Parlantes Edifier X100 2.1 ");
 
-            Assert.IsNotNull(result.Salable);
+            Assert.IsNotNull(result.Saleable);
 
-            Assert.AreEqual(result.Salable, 0);
+            Assert.AreEqual(result.Saleable, 0);
 
             Assert.AreEqual(result.Code, "SIN STOCK");
 
-            Assert.AreEqual(result.IdCategory, 5);
+            Assert.AreEqual(result.CategoryId, 5);
 
-            Assert.AreEqual(result.IdBrand, 130);
+            Assert.AreEqual(result.BrandId, 130);
 
-            Assert.AreEqual(result.IdSubCategory, 65);
+            Assert.AreEqual(result.SubCategoryId, 65);
 
             Assert.AreEqual(result.SpecialPrice , 5409);
 

@@ -10,7 +10,7 @@ namespace Database.Model
 
         public string Name { get; set; }
 
-        public int ExternalIdProduct { get; set; }
+        public int ExternalProductId { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -26,7 +26,7 @@ namespace Database.Model
 
         public double PreviousSpecialPrice { get; set; }
 
-        public bool Salable { get; set; }
+        public bool Saleable { get; set; }
 
         public string Code { get; set; }
 
