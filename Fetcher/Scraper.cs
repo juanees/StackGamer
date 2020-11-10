@@ -18,8 +18,7 @@ namespace Fetcher
     public class Scraper
     {
         private readonly ILogger logger;
-        private readonly IOptions<StackGamerOption> stackGamerOptions;
-        private readonly ILoggerFactory loggerFactory;
+        private readonly IOptions<StackGamerOption> stackGamerOptions;        
         private readonly ParametersService parametersService;
 
         private string CATEGORIES_URL_VALIDATION_REGEX;
@@ -35,11 +34,13 @@ namespace Fetcher
         public async Task<List<CategoryDTO>> GetCategoriesAndProducts()
         {
             CATEGORIES_URL_VALIDATION_REGEX = parametersService.GetParameter(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
-            logger.LogInformation("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
+            logger.LogTrace("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
             PRODUCT_ID_FROM_URL_REGEX = parametersService.GetParameter(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
-            logger.LogInformation("PRODUCT_ID_FROM_URL_REGEX: " + PRODUCT_ID_FROM_URL_REGEX);
+            logger.LogTrace("PRODUCT_ID_FROM_URL_REGEX: " + PRODUCT_ID_FROM_URL_REGEX);
+            logger.LogInformation("Parameters fetched");
 
             List<CategoryDTO> categories = new List<CategoryDTO>();
+
             logger.LogInformation("Scraping web..");
             logger.LogInformation("Downloading browser if necessary");
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
@@ -47,7 +48,7 @@ namespace Fetcher
             using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true
-            }, loggerFactory);
+            });
             using var page = await browser.NewPageAsync();
 
             await page.GoToAsync(stackGamerOptions.Value.Urls.CategoriesUrl);

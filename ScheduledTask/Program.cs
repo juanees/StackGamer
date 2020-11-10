@@ -12,6 +12,7 @@ using Services;
 using Shared;
 using Shared.Options;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ScheduledTask
@@ -21,28 +22,50 @@ namespace ScheduledTask
         private static ILogger<Program> logger;
         static async Task Main(string[] args)
         {
-            //https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
+            try
+            {
+                //https://www.blinkingcaret.com/2018/02/14/net-core-console-logging/
 
-            #region Dependency Injection and Configuration files
-            var serviceCollection = new ServiceCollection();
-            IConfiguration configuration = new ConfigurationBuilder()
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-               .AddEnvironmentVariables()
-               .AddCommandLine(args)
-               .Build();
-            ConfigureServices(serviceCollection, configuration);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+                #region Dependency Injection and Configuration files
+                var serviceCollection = new ServiceCollection();
+                IConfiguration configuration = new ConfigurationBuilder()
+                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                   .AddEnvironmentVariables()
+                   .AddCommandLine(args)
+                   .Build();
+                ConfigureServices(serviceCollection, configuration);
+                var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            #endregion
+                #endregion
 
-            logger = serviceProvider.GetService<ILogger<Program>>();
-            logger.LogInformation("Scrapping data");
-            var scraper = serviceProvider.GetService<Scraper>();
+                logger = serviceProvider.GetService<ILogger<Program>>();
 
-            var categories = await scraper.GetCategoriesAndProducts();
-                        
-            Console.ReadLine();
-            LogManager.Shutdown();
+                logger.LogInformation($"Starting {Assembly.GetEntryAssembly().GetName().Name}");
+
+                logger.LogInformation("Scrapping data");
+                var scraper = serviceProvider.GetService<Scraper>();
+
+                try
+                {
+                    var categories = await scraper.GetCategoriesAndProducts();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, e.Message);
+                }
+
+
+               
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, e.Message);
+            }
+            finally
+            {
+                logger.LogInformation($"Exiting {Assembly.GetEntryAssembly().GetName().Name}");
+                LogManager.Shutdown();
+            }
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
@@ -62,10 +85,11 @@ namespace ScheduledTask
                     logBuilder.SetMinimumLevel(loggingOption.LogLevel);
                     logBuilder.AddNLog(configuration);
                 })
+                .AddMemoryCache()
                 .AddTransient<Thief>()
                 .AddTransient<StackGameContext>()
                 .AddTransient<Scraper>()
-                .AddTransient<ParametersService>()
+                .AddSingleton<ParametersService>()
                 .AddHttpClient("stack-gamer", c =>
                 {
                     c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);
