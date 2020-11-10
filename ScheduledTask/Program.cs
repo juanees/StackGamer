@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using Services;
 using Shared;
 using Shared.Options;
 using System;
@@ -64,6 +65,7 @@ namespace ScheduledTask
                 .AddTransient<Thief>()
                 .AddTransient<StackGameContext>()
                 .AddTransient<Scraper>()
+                .AddTransient<ParametersService>()
                 .AddHttpClient("stack-gamer", c =>
                 {
                     c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);

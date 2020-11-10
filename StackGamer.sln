@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fetcher", "Fetcher\Fetcher.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{C0542C6E-8035-45EA-8A95-5DB42CDADF79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{E1418743-E276-4851-AC9F-ECB79B3A4D80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{E1418743-E276-4851-AC9F-ECB79B3A4D80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{3011A266-4CCE-496C-A45A-DF61968CB237}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{3011A266-4CCE-496C-A45A-DF61968CB237}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{4A21BEC2-0A3A-418C-95F2-5C549339CB4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{3011A266-4CCE-496C-A45A-DF61968CB237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3011A266-4CCE-496C-A45A-DF61968CB237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3011A266-4CCE-496C-A45A-DF61968CB237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A21BEC2-0A3A-418C-95F2-5C549339CB4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A21BEC2-0A3A-418C-95F2-5C549339CB4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A21BEC2-0A3A-418C-95F2-5C549339CB4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A21BEC2-0A3A-418C-95F2-5C549339CB4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,11 @@
-﻿using Fetcher.Model.Scraper;
+﻿using Database;
+using Fetcher.Model.Scraper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PuppeteerSharp;
+using Services;
+using Shared.Common;
 using Shared.Options;
 using System;
 using System.Collections.Generic;
@@ -17,25 +20,31 @@ namespace Fetcher
         private readonly ILogger logger;
         private readonly IOptions<StackGamerOption> stackGamerOptions;
         private readonly ILoggerFactory loggerFactory;
+        private readonly ParametersService parametersService;
 
-        private readonly string CATEGORIES_URL_VALIDATION_REGEX = @"\/index.php\?seccion=3&cate=([0-9]+)";
-        private readonly string PRODUCT_ID_FROM_URL_REGEX = @"\/producto\/[a-zA-Z0-9_]+_([0-9]+)\?";
+        private string CATEGORIES_URL_VALIDATION_REGEX;
+        private string PRODUCT_ID_FROM_URL_REGEX;
 
-        public Scraper(IOptions<StackGamerOption> _stackGamerOptions, ILogger<Scraper> _logger, ILoggerFactory _loggerFactory)
+        public Scraper(IOptions<StackGamerOption> _stackGamerOptions, ILogger<Scraper> _logger, ParametersService _parametersService)
         {
             logger = _logger;
             stackGamerOptions = _stackGamerOptions;
-            loggerFactory = _loggerFactory;
+            parametersService = _parametersService;
         }
 
         public async Task<List<CategoryDTO>> GetCategoriesAndProducts()
         {
+            CATEGORIES_URL_VALIDATION_REGEX = parametersService.GetParameter(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
+            logger.LogInformation("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
+            PRODUCT_ID_FROM_URL_REGEX = parametersService.GetParameter(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
+            logger.LogInformation("PRODUCT_ID_FROM_URL_REGEX: " + PRODUCT_ID_FROM_URL_REGEX);
+
             List<CategoryDTO> categories = new List<CategoryDTO>();
             logger.LogInformation("Scraping web..");
             logger.LogInformation("Downloading browser if necessary");
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
             logger.LogInformation("Scraping started");
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true
             }, loggerFactory);
