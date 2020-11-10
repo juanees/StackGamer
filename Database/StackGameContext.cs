@@ -21,9 +21,36 @@ namespace Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
-            //modelBuilder.Entity<ParameterDAO>().HasData(
-            //    new ParameterDAO() { },
-            //    new ParameterDAO() { });
+            modelBuilder.Entity<ParameterDAO>().HasData(
+                new ParameterDAO()
+                {
+                    ParameterId = 1,
+                    Key = "TIME_BETWEEN_QUERIES",
+                    Description = "Tiempo en segundos a esperar entre consultas",
+                    Value = "5"
+                },
+                new ParameterDAO()
+                {
+                    ParameterId = 2,
+                    Key = "MAX_QUERIES_PER_PRODUCT",
+                    Description = "Máxima cantidad de veces que se consulta un producto",
+                    Value = "5"
+                },
+                new ParameterDAO()
+                {
+                    ParameterId = 3,
+                    Key = "CATEGORIES_URL_VALIDATION_REGEX",
+                    Description = "Regex para la url de categorías",
+                    Value = @"\/index.php\?seccion=3&cate=([0-9]+)"
+                },
+                new ParameterDAO()
+                {
+                    ParameterId = 4,
+                    Key = "PRODUCT_ID_FROM_URL_REGEX",
+                    Description = "Regex para la url de producto",
+                    Value = @"\/producto\/[a-zA-Z0-9_]+_([0-9]+)\?"
+                }
+            );
         }
 
         public override int SaveChanges()
