@@ -44,9 +44,11 @@ namespace ScheduledTask
 
                 logger.LogInformation("Scrapping data");
                 var scraper = serviceProvider.GetService<Scraper>();
+                var thief = serviceProvider.GetService<Thief>();
 
                 try
                 {
+                    var a = await thief.GetProductById(8349);
                     var categories = await scraper.GetCategoriesAndProducts();
                 }
                 catch (Exception e)
