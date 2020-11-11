@@ -31,7 +31,7 @@ namespace Fetcher
             parametersService = _parametersService;
         }
 
-        public async Task<List<CategoryDTO>> GetCategoriesAndProducts()
+        public async Task<List<Category>> GetCategoriesAndProducts()
         {
             CATEGORIES_URL_VALIDATION_REGEX = parametersService.GetParameter(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
             logger.LogTrace("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
@@ -39,7 +39,7 @@ namespace Fetcher
             logger.LogTrace("PRODUCT_ID_FROM_URL_REGEX: " + PRODUCT_ID_FROM_URL_REGEX);
             logger.LogInformation("Parameters fetched");
 
-            List<CategoryDTO> categories = new List<CategoryDTO>();
+            List<Category> categories = new List<Category>();
 
             logger.LogInformation("Scraping web..");
             logger.LogInformation("Downloading browser if necessary");
@@ -91,7 +91,7 @@ namespace Fetcher
                     {
                         if (validation.Groups.Count > 0 && int.TryParse(validation.Groups[1].Value, out int categoryId))
                         {
-                            var cat = new CategoryDTO() { CategoryId = categoryId, Description = scrappedCategory.Description.Trim(), Url = new Uri(scrappedCategory.Url) };
+                            var cat = new Category() { CategoryId = categoryId, Description = scrappedCategory.Description.Trim(), Url = new Uri(scrappedCategory.Url) };
                             categories.Add(cat);
                             logger.LogTrace("Category scrapped: {0} - {1}", cat.CategoryId, cat.Description);
                         }
@@ -134,7 +134,7 @@ namespace Fetcher
                         {
                             if (validation.Groups.Count > 0 && int.TryParse(validation.Groups[1].Value, out int productId))
                             {
-                                var prod = new ProductDTO() { ProductId = productId, Name = scrappedProduct.Name.Trim(), Url = new Uri(scrappedProduct.Url) };
+                                var prod = new Model.Scraper.Product() { ProductId = productId, Name = scrappedProduct.Name.Trim(), Url = new Uri(scrappedProduct.Url) };
                                 cat.Products.Add(prod);
                                 logger.LogTrace("Product scrapped: {0} - {1}", prod.ProductId, prod.Name);
                             }

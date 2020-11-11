@@ -25,7 +25,7 @@ namespace Fetcher
             stackGamerOptions = _stackGamerOptions;
         }
 
-        public async Task<ProductDTO> GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
             string query = stackGamerOptions.Value.Urls.GetProductByIdUrl + id;
 
@@ -33,7 +33,7 @@ namespace Fetcher
 
             try
             {
-                return await httpClient.GetFromJsonAsync<ProductDTO>(query);
+                return await httpClient.GetFromJsonAsync<Product>(query);
             }
             catch (HttpRequestException e) // Non success
             {
@@ -49,7 +49,6 @@ namespace Fetcher
             }
 
             return null;
-
         }
     }
 }

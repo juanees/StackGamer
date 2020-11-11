@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Fetcher.Model.Thief
 {
-    public class ProductDTO
+    public class Product
     {
         public class Image
         {
