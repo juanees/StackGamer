@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Database.Model
 {
-    public class CategoryDAO : BaseEntity
+    public class Category : BaseEntity
     {
         [Key]
         public int IdCategory { get; set; }
@@ -12,7 +12,7 @@ namespace Database.Model
 
         public int ExternalIdCategory { get; set; }
 
-        public ICollection<ProductDAO> Products { get; set; }
+        public ICollection<Product> Products { get; set; }
 
     }
 }

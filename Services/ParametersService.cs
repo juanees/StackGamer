@@ -25,16 +25,16 @@ namespace Services
             SetParameters();
         }
 
-        public ParameterDAO GetParameter(string key)
+        public Parameter GetParameter(string key)
         {
-            if (!memoryCache.TryGetValue<List<ParameterDAO>>(PARAMETERS_KEY, out var parameters))
+            if (!memoryCache.TryGetValue<List<Parameter>>(PARAMETERS_KEY, out var parameters))
             {
                 parameters = SetParameters();
             }
             return parameters.FirstOrDefault(p => p.Key == key);
         }
 
-        private List<ParameterDAO> SetParameters()
+        private List<Parameter> SetParameters()
         {
             MemoryCacheEntryOptions cacheEntryOptions = CreateEntryOptions();
             var stackGameContext = new StackGameContext();

@@ -24,7 +24,7 @@ namespace Fetcher
             stackGamerOptions = _stackGamerOptions;
         }
 
-        public async Task<ProductDTO> GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
             string query = stackGamerOptions.Value.Urls.GetProductByIdUrl + id;
 
@@ -47,7 +47,7 @@ namespace Fetcher
 
                 try
                 {
-                    return await JsonSerializer.DeserializeAsync<ProductDTO>(contentStream, new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true });
+                    return await JsonSerializer.DeserializeAsync<Product>(contentStream, new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true });
 
                 }
                 catch (JsonException e) // Invalid JSON

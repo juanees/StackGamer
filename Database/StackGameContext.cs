@@ -10,10 +10,10 @@ namespace Database
 {
     public class StackGameContext : DbContext
     {
-        public DbSet<CategoryDAO> Categories { get; set; }
-        public DbSet<ProductDAO> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<Audit> Audits { get; set; }
-        public DbSet<ParameterDAO> Parameters { get; set; }
+        public DbSet<Parameter> Parameters { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=../Database/stack-game.db");
@@ -21,29 +21,29 @@ namespace Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
-            modelBuilder.Entity<ParameterDAO>().HasData(
-                new ParameterDAO()
+            modelBuilder.Entity<Parameter>().HasData(
+                new Parameter()
                 {
                     ParameterId = 1,
                     Key = "TIME_BETWEEN_QUERIES",
                     Description = "Tiempo en segundos a esperar entre consultas",
                     Value = "5"
                 },
-                new ParameterDAO()
+                new Parameter()
                 {
                     ParameterId = 2,
                     Key = "MAX_QUERIES_PER_PRODUCT",
                     Description = "Máxima cantidad de veces que se consulta un producto",
                     Value = "5"
                 },
-                new ParameterDAO()
+                new Parameter()
                 {
                     ParameterId = 3,
                     Key = "CATEGORIES_URL_VALIDATION_REGEX",
                     Description = "Regex para la url de categorías",
                     Value = @"\/index.php\?seccion=3&cate=([0-9]+)"
                 },
-                new ParameterDAO()
+                new Parameter()
                 {
                     ParameterId = 4,
                     Key = "PRODUCT_ID_FROM_URL_REGEX",
