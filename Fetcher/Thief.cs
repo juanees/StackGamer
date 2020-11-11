@@ -6,6 +6,7 @@ using Shared;
 using Shared.Options;
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -30,37 +31,57 @@ namespace Fetcher
 
             var httpClient = clientFactory.CreateClient("stack-gamer");
 
-            using var httpResponse = await httpClient.GetAsync(query, HttpCompletionOption.ResponseHeadersRead);
             try
             {
-                httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
+                return await httpClient.GetFromJsonAsync<ProductDTO>(query);
             }
-            catch (Exception e)
+            catch (HttpRequestException e) // Non success
             {
-                logger.LogError(0, e, $"Error while making request to get product {id}", id);
-                return null;
+                logger.LogError(e,"An error occurred.");
             }
-
-            if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "text/html")
+            catch (NotSupportedException e) // When content type is not valid
             {
-                var contentStream = await httpResponse.Content.ReadAsStreamAsync();
-
-                try
-                {
-                    return await JsonSerializer.DeserializeAsync<ProductDTO>(contentStream, new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true });
-
-                }
-                catch (JsonException e) // Invalid JSON
-                {
-                    logger.LogError(e, "Invalid JSON.");
-                }
+                logger.LogError(e,"The content type is not supported.");
             }
-            else
+            catch (JsonException e) // Invalid JSON
             {
-                logger.LogError("HTTP Response was invalid and cannot be deserialised.");
+                logger.LogError(e,"Invalid JSON.");
             }
 
             return null;
+
+
+            //using var httpResponse = await httpClient.GetAsync(query, HttpCompletionOption.ResponseHeadersRead);
+            //try
+            //{
+            //    httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
+            //}
+            //catch (Exception e)
+            //{
+            //    logger.LogError(0, e, $"Error while making request to get product {id}", id);
+            //    return null;
+            //}
+
+            //if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "text/html")
+            //{
+            //    var contentStream = await httpResponse.Content.ReadAsStreamAsync();
+
+            //    try
+            //    {
+            //        return await JsonSerializer.DeserializeAsync<ProductDTO>(contentStream, new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true });
+
+            //    }
+            //    catch (JsonException e) // Invalid JSON
+            //    {
+            //        logger.LogError(e, "Invalid JSON.");
+            //    }
+            //}
+            //else
+            //{
+            //    logger.LogError("HTTP Response was invalid and cannot be deserialised.");
+            //}
+
+            //return null;
 
         }
     }
