@@ -50,39 +50,6 @@ namespace Fetcher
 
             return null;
 
-
-            //using var httpResponse = await httpClient.GetAsync(query, HttpCompletionOption.ResponseHeadersRead);
-            //try
-            //{
-            //    httpResponse.EnsureSuccessStatusCode(); // throws if not 200-299
-            //}
-            //catch (Exception e)
-            //{
-            //    logger.LogError(0, e, $"Error while making request to get product {id}", id);
-            //    return null;
-            //}
-
-            //if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "text/html")
-            //{
-            //    var contentStream = await httpResponse.Content.ReadAsStreamAsync();
-
-            //    try
-            //    {
-            //        return await JsonSerializer.DeserializeAsync<ProductDTO>(contentStream, new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true });
-
-            //    }
-            //    catch (JsonException e) // Invalid JSON
-            //    {
-            //        logger.LogError(e, "Invalid JSON.");
-            //    }
-            //}
-            //else
-            //{
-            //    logger.LogError("HTTP Response was invalid and cannot be deserialised.");
-            //}
-
-            //return null;
-
         }
     }
 }
