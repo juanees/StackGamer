@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Database.Model
 {
-    public class ProductDAO: BaseEntity
+    public class Product: BaseEntity
     {
         [Key]
         public int ProductId { get; set; }
@@ -14,7 +14,7 @@ namespace Database.Model
 
         public int CategoryId { get; set; }
 
-        public CategoryDAO Category { get; set; }
+        public Category Category { get; set; }
 
         public int BrandId { get; set; }
 

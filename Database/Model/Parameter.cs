@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Database.Model
 {
-    public class ParameterDAO : BaseEntity
+    public class Parameter : BaseEntity
     {
         [Key]
         public int ParameterId { get; set; }

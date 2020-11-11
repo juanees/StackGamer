@@ -8,14 +8,14 @@ namespace Tests.UnitTests.Mapper
 {
 
     [TestFixture]
-    public class ProductDtoToDao
+    public class ConvertToDatabaseProduct
     {
-        private ProductDTO _productDTO;
+        private Product _product;
 
         [SetUp]
         public void SetUp()
         {
-            _productDTO = new ProductDTO()
+            _product = new Product()
             {
                 Name = "  test TEST ñ 🤡 ",
                 Saleable = null,
@@ -31,30 +31,30 @@ namespace Tests.UnitTests.Mapper
         }
 
         [Test]
-        public void MapDtoToDao_IsWorkingCorrectly()
+        public void ConvertToDatabaseProduct_IsWorkingCorrectly()
         {
             int codeProd = int.MaxValue;
-            var result = _productDTO.MapDtoToDao(codeProd);
+            var result = _product.ConvertToDatabaseProduct(codeProd);
 
-            Assert.AreEqual(result.Name, _productDTO.Name);
+            Assert.AreEqual(result.Name, _product.Name);
 
             Assert.AreEqual(result.ExternalProductId, codeProd);
 
             Assert.IsFalse(result.Saleable);
 
-            Assert.AreEqual(result.Code, _productDTO.Code);
+            Assert.AreEqual(result.Code, _product.Code);
 
-            Assert.AreEqual(result.BrandId, _productDTO.BrandId);
+            Assert.AreEqual(result.BrandId, _product.BrandId);
 
-            Assert.AreEqual(result.CategoryId, _productDTO.SubCategoryId);
+            Assert.AreEqual(result.CategoryId, _product.SubCategoryId);
 
-            Assert.AreEqual(result.SpecialPrice * 100, _productDTO.SpecialPrice);
+            Assert.AreEqual(result.SpecialPrice * 100, _product.SpecialPrice);
 
-            Assert.AreEqual(result.PreviousSpecialPrice * 100, _productDTO.PreviousSpecialPrice);
+            Assert.AreEqual(result.PreviousSpecialPrice * 100, _product.PreviousSpecialPrice);
 
             Assert.AreEqual(result.ListPrice, 0);
 
-            Assert.AreEqual(result.PreviousListPrice * 100, _productDTO.PreviousListPrice);
+            Assert.AreEqual(result.PreviousListPrice * 100, _product.PreviousListPrice);
         }
     }
 }
