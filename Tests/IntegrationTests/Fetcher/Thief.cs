@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using Shared.Common;
 using Shared.Options;
 using System;
 using System.Net;
@@ -11,15 +12,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Tests.UnitTests.Fetcher
+namespace Tests.IntegrationTests.Fetcher
 {
     [TestFixture]
     public class Thief
     {
-
         private IOptions<StackGamerOption> someOptions;
-
-
 
         [SetUp]
         public void SetUp()
@@ -35,14 +33,17 @@ namespace Tests.UnitTests.Fetcher
         }
 
         [Test]
-        public async Task Fetcher_Thief_IsWorkingCorrectly()
+        public async Task Fetcher_Thief_Product_Should_Not_Be_Null_When_Http_Status_Code_200()
         {
-
             //https://www.thecodebuzz.com/unit-test-mock-httpclientfactory-moq-net-core/
             //https://stackoverflow.com/questions/56064031/mocking-httpclient-getasync-by-using-moq-library-in-xunit-test
             string json = "{\"coins\":0,\"coins_forzada\":null,\"coins_sale\":null,\"destacado\":0,\"nombre\":\"Parlantes Edifier X100 2.1 \",\"id_categoria\":5,\"id_subcategoria\":65,\"garantia\":\"6 meses\",\"id_marca\":130,\"precioEspecial\":5409,\"precioLista\":5778,\"precioListaAnterior\":null,\"precioEspecialAnterior\":null,\"imagenes\":null,\"vendible\":0,\"codigo\":\"SIN STOCK\",\"niveles\":null,\"reviews\":null,\"tv\":null,\"sale\":null,\"incluidos\":null}";
-            var status = HttpStatusCode.OK;
-            CreateMocks(out _, out global::Fetcher.Thief _thief, out _, json, status);
+            var status = HttpStatusCode.OK;            
+
+            var _loggerMock = Mocks.MocksCreator.CreateLoggerMock<global::Fetcher.Thief>();
+            var _httpFactory = Mocks.MocksCreator.CreateHttpClientFactory(status, json, someOptions.Value.Urls.BaseUrl,Constants.HTTP_CLIENT_STACK_GAMER);
+
+            var _thief = new global::Fetcher.Thief(_httpFactory.Object, someOptions, _loggerMock.Object);
 
             var productId = 1000;
             var result = await _thief.GetProductById(productId);
@@ -78,32 +79,8 @@ namespace Tests.UnitTests.Fetcher
 
         }
 
-        private void CreateMocks(out Mock<ILogger<global::Fetcher.Thief>> _loggerMock, out global::Fetcher.Thief _thief, out Mock<IHttpClientFactory> _mockFactory, string json, HttpStatusCode status)
-        {
-            _mockFactory = new Mock<IHttpClientFactory>();
-            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-            mockHttpMessageHandler.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = status,
-                    Content = new StringContent(json, Encoding.UTF8, "text/html"),
-                });
-            var client = new HttpClient(mockHttpMessageHandler.Object)
-            {
-                BaseAddress = new Uri(someOptions.Value.Urls.BaseUrl)
-            };
-            _mockFactory
-                .Setup(_ => _.CreateClient("stack-gamer"))
-                .Returns(client);
-
-            _loggerMock = new Mock<ILogger<global::Fetcher.Thief>>();
-
-            _thief = new global::Fetcher.Thief(_mockFactory.Object, someOptions, _loggerMock.Object);
-        }
-
         [Test]
-        public async Task Fetcher_Thief_ProductNullIfJsonError()
+        public async Task Fetcher_Thief_Product_Should_Be_Null_When_Json_Error()
         {
 
             //https://www.thecodebuzz.com/unit-test-mock-httpclientfactory-moq-net-core/
@@ -111,7 +88,10 @@ namespace Tests.UnitTests.Fetcher
             string json = "{\"coins\":0,\"coins_forzada:null,\"coins_sale\":null,\"destacado\":0,\"nombre\":\"Parlantes Edifier X100 2.1 \",\"id_categoria\":5,\"id_subcategoria\":65,\"garantia\":\"6 meses\",\"id_marca\":130,\"precioEspecial\":5409,\"precioLista\":5778,\"precioListaAnterior\":null,\"precioEspecialAnterior\":null,\"imagenes\":null,\"vendible\":0,\"codigo\":\"SIN STOCK\",\"niveles\":null,\"reviews\":null,\"tv\":null,\"sale\":null,\"incluidos\":null}";
             var status = HttpStatusCode.OK;
 
-            CreateMocks(out Mock<ILogger<global::Fetcher.Thief>> _loggerMock, out global::Fetcher.Thief _thief, out Mock<IHttpClientFactory> _mockFactory, json, status);
+            var _loggerMock = Mocks.MocksCreator.CreateLoggerMock<global::Fetcher.Thief>();
+            var _httpFactory = Mocks.MocksCreator.CreateHttpClientFactory(status, json, someOptions.Value.Urls.BaseUrl, Constants.HTTP_CLIENT_STACK_GAMER);
+
+            var _thief = new global::Fetcher.Thief(_httpFactory.Object, someOptions, _loggerMock.Object);
 
             var productId = 1000;
             var result = await _thief.GetProductById(productId);
@@ -129,15 +109,17 @@ namespace Tests.UnitTests.Fetcher
         }
 
         [Test]
-        public async Task Fetcher_Thief_ProductNullIfHttpStatusCodeNot200()
+        public async Task Fetcher_Thief_Product_Should_Be_Null_When_Http_Status_Code_Not_200()
         {
-
             //https://www.thecodebuzz.com/unit-test-mock-httpclientfactory-moq-net-core/
             //https://stackoverflow.com/questions/56064031/mocking-httpclient-getasync-by-using-moq-library-in-xunit-test
             string json = "{\"coins\":0,\"coins_forzada\":null,\"coins_sale\":null,\"destacado\":0,\"nombre\":\"Parlantes Edifier X100 2.1 \",\"id_categoria\":5,\"id_subcategoria\":65,\"garantia\":\"6 meses\",\"id_marca\":130,\"precioEspecial\":5409,\"precioLista\":5778,\"precioListaAnterior\":null,\"precioEspecialAnterior\":null,\"imagenes\":null,\"vendible\":0,\"codigo\":\"SIN STOCK\",\"niveles\":null,\"reviews\":null,\"tv\":null,\"sale\":null,\"incluidos\":null}";
             var status = HttpStatusCode.NotFound;
 
-            CreateMocks(out Mock<ILogger<global::Fetcher.Thief>> _loggerMock, out global::Fetcher.Thief _thief, out Mock<IHttpClientFactory> _mockFactory, json, status);
+            var _loggerMock = Mocks.MocksCreator.CreateLoggerMock<global::Fetcher.Thief>();
+            var _httpFactory = Mocks.MocksCreator.CreateHttpClientFactory(status, json, someOptions.Value.Urls.BaseUrl, Constants.HTTP_CLIENT_STACK_GAMER);
+
+            var _thief = new global::Fetcher.Thief(_httpFactory.Object, someOptions, _loggerMock.Object);
 
             var productId = 1000;
             var result = await _thief.GetProductById(productId);
@@ -153,8 +135,5 @@ namespace Tests.UnitTests.Fetcher
             //Assert
             Assert.IsNull(result);
         }
-
-
-
     }
 }

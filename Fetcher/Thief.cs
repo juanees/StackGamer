@@ -3,6 +3,7 @@ using Fetcher.Model.Thief;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared;
+using Shared.Common;
 using Shared.Options;
 using System;
 using System.Net.Http;
@@ -29,7 +30,7 @@ namespace Fetcher
         {
             string query = stackGamerOptions.Value.Urls.GetProductByIdUrl + id;
 
-            var httpClient = clientFactory.CreateClient("stack-gamer");
+            var httpClient = clientFactory.CreateClient(Constants.HTTP_CLIENT_STACK_GAMER);
 
             try
             {

@@ -8,12 +8,10 @@
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Fetcher\Fetcher.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UnitTests\Database\" />
   </ItemGroup>
 </Project>
