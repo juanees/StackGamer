@@ -9,7 +9,7 @@ namespace Core.Mapper
     {
         public static Database.Model.Product ConvertToDatabaseProduct(this Fetcher.Model.Thief.Product product, int prodCode)
         {
-            var prod = new Database.Model.Product()
+            return new()
             {
                 Name = product.Name,
                 ExternalProductId = prodCode,
@@ -22,7 +22,6 @@ namespace Core.Mapper
                 ListPrice = (product.ListPrice ?? 0) / 100,
                 PreviousListPrice = (product.PreviousListPrice ?? 0) / 100
             };
-            return prod;
         }
     }
 }

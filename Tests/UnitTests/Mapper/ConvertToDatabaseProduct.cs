@@ -31,7 +31,7 @@ namespace Tests.UnitTests.Mapper
         }
 
         [Test]
-        public void ConvertToDatabaseProduct_IsWorkingCorrectly()
+        public void Mapper_ConvertToDatabaseProduct_Is_Working_Correctly()
         {
             int codeProd = int.MaxValue;
             var result = _product.ConvertToDatabaseProduct(codeProd);

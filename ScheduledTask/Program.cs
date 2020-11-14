@@ -10,6 +10,7 @@ using NLog;
 using NLog.Extensions.Logging;
 using Services;
 using Shared;
+using Shared.Common;
 using Shared.Options;
 using System;
 using System.Reflection;
@@ -48,8 +49,13 @@ namespace ScheduledTask
 
                 try
                 {
-                    var a = await thief.GetProductById(8349);
                     var categories = await scraper.GetCategoriesAndProducts();
+                    var randomCategory = categories[new Random().Next(0,categories.Count)];
+                    var randomProd = randomCategory.Products[new Random().Next(0, randomCategory.Products.Count)];
+
+                    var productInfo = await thief.GetProductById(randomProd.ProductId);
+                    var test = 0;
+                    
                 }
                 catch (Exception e)
                 {
@@ -89,10 +95,10 @@ namespace ScheduledTask
                 })
                 .AddMemoryCache()
                 .AddTransient<Thief>()
-                .AddTransient<StackGameContext>()
                 .AddTransient<Scraper>()
-                .AddSingleton<ParametersService>()
-                .AddHttpClient("stack-gamer", c =>
+                .AddDbContext<StackGameContext>(b=>b.UseSqlite(Constants.RELATIVE_PATH_SQL_LITE_BD))
+                .AddTransient<ParametersService>()
+                .AddHttpClient(Constants.HTTP_CLIENT_STACK_GAMER, c =>
                 {
                     c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);
                     c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.185 Mobile Safari/537.36");

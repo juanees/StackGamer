@@ -14,14 +14,16 @@ namespace Services
     {
         private readonly IMemoryCache memoryCache;
         private readonly ILogger<ParametersService> logger;
-
+        private readonly StackGameContext stackGameContext;
         private static readonly int EXPIRATION_MINUTES = 15;
         private static readonly string PARAMETERS_KEY = "parameters";
 
-        public ParametersService(IMemoryCache _memoryCache, ILogger<ParametersService> _logger)
+        public ParametersService(IMemoryCache _memoryCache, ILogger<ParametersService> _logger, StackGameContext _stackGameContext)
         {
             memoryCache = _memoryCache;
             logger = _logger;
+            stackGameContext = _stackGameContext;
+
             SetParameters();
         }
 
@@ -36,16 +38,17 @@ namespace Services
 
         private List<Parameter> SetParameters()
         {
-            MemoryCacheEntryOptions cacheEntryOptions = CreateEntryOptions();
-            var stackGameContext = new StackGameContext();
+            if (!memoryCache.TryGetValue<List<Parameter>>(PARAMETERS_KEY, out var parameters))
+            {
+                MemoryCacheEntryOptions cacheEntryOptions = CreateEntryOptions();
 
-            var parameters = stackGameContext.Parameters.ToList();
+                parameters = stackGameContext.Parameters.ToList();
 
-            //add cache Item with options of callback
-            memoryCache.Set(PARAMETERS_KEY, parameters, cacheEntryOptions);
+                //add cache Item with options of callback
+                memoryCache.Set(PARAMETERS_KEY, parameters, cacheEntryOptions);
 
-            logger.LogInformation("Parameters seted");
-
+                logger.LogInformation("Parameters seted");
+            }
             return parameters;
         }
 
@@ -73,7 +76,8 @@ namespace Services
         private void CacheItemRemoved(object key, object value, EvictionReason reason, object state)
         {
             logger.LogTrace(key + " " + value + " removed from cache due to:" + reason);
-            SetParameters();
+            if (reason != EvictionReason.Replaced)
+                SetParameters();
         }
     }
 }

@@ -15,9 +15,10 @@ namespace Database
         public DbSet<Audit> Audits { get; set; }
         public DbSet<Parameter> Parameters { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=../Database/stack-game.db");
+        public StackGameContext(DbContextOptions<StackGameContext> options) : base(options)
+        {
 
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
@@ -60,14 +61,14 @@ namespace Database
             var entries = ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
-
+            var date = DateTime.Now;
             foreach (var entityEntry in entries)
-            {
-                ((BaseEntity)entityEntry.Entity).UpdatedDate = DateTime.Now;
+            {                
+                ((BaseEntity)entityEntry.Entity).UpdatedDate = date;
 
                 if (entityEntry.State == EntityState.Added)
                 {
-                    ((BaseEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
+                    ((BaseEntity)entityEntry.Entity).CreatedDate = date;
                 }
             }
 
