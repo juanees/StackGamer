@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Fetcher.Model.Scraper
 {
-    public class Product
+    public class ScraperProduct
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
