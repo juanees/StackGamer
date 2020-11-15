@@ -26,7 +26,14 @@ namespace Fetcher
             logger = _logger;
             stackGamerOptions = _stackGamerOptions;
         }
-        
+
+        /// <summary>
+        /// Gets a products from the API using the "External product id".
+        /// Returns a <see cref="Result"/> wrapping a: <see cref="ApiFetcherProduct"/>. 
+        /// If something bad happens (<see cref="ResultBase.IsFailed"/>), you have to use <see cref="ResultBase.HasError(Func{Error, bool})"/> to get the following errors: <see cref="TimeOutError"/>, <see cref="ContentTypeNotValidError"/> or <see cref="JsonInvalidError"/>
+        /// .If no matches were found for those types of errors, an HttpRequestException occurred and was wrapped with an <see cref="Error"/>
+        /// </summary>
+        /// <param name="id">External product id</param>
         public async Task<Result<ApiFetcherProduct>> GetProductById(int id)
         {
             string query = stackGamerOptions.Value.Urls.GetProductByIdUrl + id;

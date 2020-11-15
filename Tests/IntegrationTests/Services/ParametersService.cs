@@ -36,7 +36,7 @@ namespace Tests.IntegrationTests.Services
             using var dbContext2 = new StackGameContext(options);
             var parametersService = new global::Services.ParametersService(_memoryCache, _logger.Object, dbContext2);
 
-            var result = parametersService.GetParameter(parameter.Key);
+            var result = await parametersService.GetParameterAsync(parameter.Key);
             var parameterRetrived = result.Value;
 
             Assert.IsNotNull(result);
@@ -50,7 +50,7 @@ namespace Tests.IntegrationTests.Services
         } 
 
         [Test]
-        public void Services_ParametersService_Should_Return_Error_Result_When_Parameter_Key_Does_Not_Exists()
+        public async Task Services_ParametersService_Should_Return_Error_Result_When_Parameter_Key_Does_Not_Exists()
         {
             // Setup
             DbContextOptions<StackGameContext> options = GenerateDbContextOptions();
@@ -59,7 +59,7 @@ namespace Tests.IntegrationTests.Services
             using var dbContext = new StackGameContext(options);
             var parametersService = new global::Services.ParametersService(_memoryCache, _logger.Object, dbContext);
             var key = "THIS_KEY_DOES_NOT_EXISTS";
-            var result = parametersService.GetParameter(key);
+            var result = await parametersService.GetParameterAsync(key);
             
 
             Assert.IsNotNull(result);
@@ -70,7 +70,6 @@ namespace Tests.IntegrationTests.Services
             ParameterNotFoundError error = (ParameterNotFoundError) result.Errors.Find(x => x.GetType() == typeof(ParameterNotFoundError));
             Assert.IsNotNull(error);
             Assert.AreEqual(key, error.Key);
-
         }
 
         private static DbContextOptions<Database.StackGameContext> GenerateDbContextOptions()

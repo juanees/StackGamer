@@ -3,10 +3,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.ResultConfig
 {
+    /// <summary>
+    /// Adds ability to log in all <see cref="Result"/> calling .Log()
+    /// </summary>
     class Logger : FluentResults.IResultLogger
     {
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Adds ability to log in all <see cref="Result"/> calling .Log()
+        /// </summary>
         public Logger(ILogger logger)
         {
             this.logger = logger;

@@ -56,8 +56,10 @@ namespace Database
 
         public override int SaveChanges()
         {
+            //Saves the information in memory before commiting the changes
             var auditEntries = OnBeforeSaveChanges();
 
+            //Set the properties UpdatedDate and CreatedDate 
             var entries = ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
@@ -71,9 +73,10 @@ namespace Database
                     ((BaseEntity)entityEntry.Entity).CreatedDate = date;
                 }
             }
-
+            //Saves the changes, adding UpdatedDate and CreatedDate
             var result = base.SaveChanges();
 
+            //Saves to the table Audits all the changes ocurred in this operation
             OnAfterSaveChanges(auditEntries);
 
             return result;
@@ -81,8 +84,10 @@ namespace Database
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
+            //Saves the information in memory before commiting the changes
             var auditEntries = OnBeforeSaveChanges();
 
+            //Set the properties UpdatedDate and CreatedDate 
             var entries = ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
@@ -96,9 +101,10 @@ namespace Database
                     ((BaseEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
                 }
             }
-
+            //Saves the changes, adding UpdatedDate and CreatedDate
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-
+            
+            //Saves to the table Audits all the changes ocurred in this operation
             await OnAfterSaveChanges(auditEntries);
 
             return result;

@@ -35,13 +35,13 @@ namespace Fetcher
 
         public async Task<Result<List<ScraperCategory>>> GetCategoriesAndProducts()
         {
-            Result<Database.Model.Parameter> resultParam = parametersService.GetParameter(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
+            Result<Database.Model.Parameter> resultParam = await parametersService.GetParameterAsync(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
             if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
             else CATEGORIES_URL_VALIDATION_REGEX = resultParam.Value.Value;
             
             logger.LogTrace("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
 
-            resultParam = parametersService.GetParameter(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
+            resultParam = await parametersService.GetParameterAsync(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
             if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
             else PRODUCT_ID_FROM_URL_REGEX = resultParam.Value.Value;
             

@@ -18,18 +18,21 @@ using System.Threading.Tasks;
 
 namespace Core.ScheduledTask
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FetchAndSaveOrUpdateProducts : ICore
     {
-        private readonly ServiceProvider serviceProvider;
+        private ServiceProvider serviceProvider = null;
 
         private ILogger<FetchAndSaveOrUpdateProducts> logger;
 
-        public FetchAndSaveOrUpdateProducts([System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
+        public FetchAndSaveOrUpdateProducts()
         {
-                serviceProvider = SetUp();
+                SetUp();
         }
 
-        public ServiceProvider SetUp(params string[] args)
+        public void SetUp(params string[] args)
         {
             #region Dependency Injection and Configuration files
             var serviceCollection = new ServiceCollection();
@@ -43,7 +46,7 @@ namespace Core.ScheduledTask
             logger = _serviceProvider.GetService<ILogger<FetchAndSaveOrUpdateProducts>>();
             Result.Setup(cfg => { cfg.Logger = new ResultConfig.Logger(logger); });
             LogManager.AutoShutdown = true;
-            return _serviceProvider;
+            serviceProvider = _serviceProvider;
             #endregion
         }
 
@@ -84,8 +87,13 @@ namespace Core.ScheduledTask
         public async Task<Result> FetchAllCategoriesAndProducts() 
         {
             var prod =await serviceProvider.GetService<ApiFetcher>().GetProductById(1233);
-            var parameter = serviceProvider.GetService<ParametersService>().GetParameter("asdsadas");
-            
+
+            await serviceProvider.GetService<ApiFetcher>().GetProductById(12);
+
+            var parameter = serviceProvider.GetService<ParametersService>().GetParameterAsync("asdsadas");
+
+            var parameter2 = await serviceProvider.GetService<ParametersService>().GetParameterAsync(Shared.Common.ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
+
             var TIM = prod.HasError<TimeOutError>();
             var TIM2 = prod.HasError<JsonInvalidError>();
             
