@@ -3,7 +3,9 @@ using Database.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
+using Services.Errors.ParametersService;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Tests.IntegrationTests.Services
@@ -34,14 +36,41 @@ namespace Tests.IntegrationTests.Services
             using var dbContext2 = new StackGameContext(options);
             var parametersService = new global::Services.ParametersService(_memoryCache, _logger.Object, dbContext2);
 
-            var parameterRetrive = parametersService.GetParameter(parameter.Key);
-            
-            Assert.IsNotNull(parameterRetrive);
-            Assert.AreEqual(parameter.ParameterId, parameterRetrive.ParameterId);
-            Assert.AreEqual(parameter.Description, parameterRetrive.Description);
-            Assert.AreEqual(parameter.Value, parameterRetrive.Value);
+            var result = parametersService.GetParameter(parameter.Key);
+            var parameterRetrived = result.Value;
 
-            await dbContext2.DisposeAsync();
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IsSuccess);
+            Assert.IsFalse(result.IsFailed);
+            Assert.IsNotNull(parameterRetrived);
+
+            Assert.AreEqual(parameter.ParameterId, parameterRetrived.ParameterId);
+            Assert.AreEqual(parameter.Description, parameterRetrived.Description);
+            Assert.AreEqual(parameter.Value, parameterRetrived.Value);
+        } 
+
+        [Test]
+        public void Services_ParametersService_Should_Return_Error_Result_When_Parameter_Key_Does_Not_Exists()
+        {
+            // Setup
+            DbContextOptions<StackGameContext> options = GenerateDbContextOptions();
+            var _memoryCache =new MemoryCache(new MemoryCacheOptions());
+            var _logger = Mocks.MocksCreator.CreateLoggerMock<global::Services.ParametersService>();
+            using var dbContext = new StackGameContext(options);
+            var parametersService = new global::Services.ParametersService(_memoryCache, _logger.Object, dbContext);
+            var key = "THIS_KEY_DOES_NOT_EXISTS";
+            var result = parametersService.GetParameter(key);
+            
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IsFailed);
+            Assert.IsFalse(result.IsSuccess);
+            Assert.Throws<InvalidOperationException>(delegate { var _ = result.Value; });
+            Assert.IsTrue(result.HasError<ParameterNotFoundError>());
+            ParameterNotFoundError error = (ParameterNotFoundError) result.Errors.Find(x => x.GetType() == typeof(ParameterNotFoundError));
+            Assert.IsNotNull(error);
+            Assert.AreEqual(key, error.Key);
+
         }
 
         private static DbContextOptions<Database.StackGameContext> GenerateDbContextOptions()

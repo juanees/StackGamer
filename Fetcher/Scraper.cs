@@ -1,5 +1,7 @@
 ﻿using Database;
 using Fetcher.Model.Scraper;
+
+using FluentResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -18,7 +20,7 @@ namespace Fetcher
     public class Scraper
     {
         private readonly ILogger logger;
-        private readonly IOptions<StackGamerOption> stackGamerOptions;        
+        private readonly IOptions<StackGamerOption> stackGamerOptions;
         private readonly ParametersService parametersService;
 
         private string CATEGORIES_URL_VALIDATION_REGEX;
@@ -31,16 +33,24 @@ namespace Fetcher
             parametersService = _parametersService;
         }
 
-        public async Task<List<Category>> GetCategoriesAndProducts()
+        public async Task<Result<List<ScraperCategory>>> GetCategoriesAndProducts()
         {
-            CATEGORIES_URL_VALIDATION_REGEX = parametersService.GetParameter(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
+            Result<Database.Model.Parameter> resultParam = parametersService.GetParameter(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
+            if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
+            else CATEGORIES_URL_VALIDATION_REGEX = resultParam.Value.Value;
+            
             logger.LogTrace("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
-            PRODUCT_ID_FROM_URL_REGEX = parametersService.GetParameter(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX)?.Value ?? throw new ArgumentNullException(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
+
+            resultParam = parametersService.GetParameter(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
+            if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
+            else PRODUCT_ID_FROM_URL_REGEX = resultParam.Value.Value;
+            
             logger.LogTrace("PRODUCT_ID_FROM_URL_REGEX: " + PRODUCT_ID_FROM_URL_REGEX);
+
             logger.LogInformation("Parameters fetched");
 
-            List<Category> categories = new List<Category>();
-
+            List<ScraperCategory> categories = new List<ScraperCategory>();
+            Result result=new Result();
             try
             {
                 logger.LogInformation("Scraping web..");
@@ -93,7 +103,7 @@ namespace Fetcher
                         {
                             if (validation.Groups.Count > 0 && int.TryParse(validation.Groups[1].Value, out int categoryId))
                             {
-                                var cat = new Category() { CategoryId = categoryId, Description = scrappedCategory.Description.Trim(), Url = new Uri(scrappedCategory.Url) };
+                                var cat = new ScraperCategory() { CategoryId = categoryId, Description = scrappedCategory.Description.Trim(), Url = new Uri(scrappedCategory.Url) };
                                 categories.Add(cat);
                                 logger.LogTrace("Category scrapped: {0} - {1}", cat.CategoryId, cat.Description);
                             }
@@ -108,6 +118,7 @@ namespace Fetcher
                     catch (Exception e)
                     {
                         logger.LogError(e, "Error parsing JSON from category");
+                        result = Result.Merge(result, Result.Fail(new Error("Error parsing JSON from category").CausedBy(e)));
                     }
                 }
 
@@ -136,7 +147,7 @@ namespace Fetcher
                             {
                                 if (validation.Groups.Count > 0 && int.TryParse(validation.Groups[1].Value, out int productId))
                                 {
-                                    var prod = new Model.Scraper.Product() { ProductId = productId, Name = scrappedProduct.Name.Trim(), Url = new Uri(scrappedProduct.Url) };
+                                    var prod = new Model.Scraper.ScraperProduct() { ProductId = productId, Name = scrappedProduct.Name.Trim(), Url = new Uri(scrappedProduct.Url) };
                                     cat.Products.Add(prod);
                                     logger.LogTrace("Product scrapped: {0} - {1}", prod.ProductId, prod.Name);
                                 }
@@ -151,6 +162,7 @@ namespace Fetcher
                         catch (Exception e)
                         {
                             logger.LogError(e, "Error parsing JSON from product");
+                            result = Result.Merge(result, Result.Fail(new Error("Error parsing JSON from product").CausedBy(e)));
                         }
                     }
                 }
@@ -159,14 +171,15 @@ namespace Fetcher
             catch (Exception e) 
             {
                 logger.LogError(e, "Error scraping {0}", stackGamerOptions.Value.Urls.CategoriesUrl);
-                categories = new List<Category>();
+                categories = new List<ScraperCategory>();
                 
             }
 
             logger.LogInformation("{0} categories scrapped", categories.Count);
             logger.LogInformation("{0} products scrapped", categories.Sum(x=>x.Products.Count));
             logger.LogInformation("Scraping finished");
-            return categories;
+            result = Result.Merge(result, Result.Ok(categories));
+            return result;
         }
 
         private async Task Delay()

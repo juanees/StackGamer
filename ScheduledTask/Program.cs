@@ -8,10 +8,10 @@ namespace ScheduledTask
     public class Program
     {
         
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             using var fsup = new FetchAndSaveOrUpdateProducts();
-            
+            var res = await fsup.FetchAllCategoriesAndProducts();
             
             var a = 0;
         }

@@ -1,5 +1,9 @@
 ﻿using Database;
 using Fetcher;
+using Fetcher.Errors;
+using Fetcher.Errors.ApiFetcher;
+using Fetcher.Model.ApiFetcher;
+using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +14,7 @@ using Services;
 using Shared.Common;
 using Shared.Options;
 using System;
+using System.Threading.Tasks;
 
 namespace Core.ScheduledTask
 {
@@ -17,14 +22,11 @@ namespace Core.ScheduledTask
     {
         private readonly ServiceProvider serviceProvider;
 
+        private ILogger<FetchAndSaveOrUpdateProducts> logger;
+
         public FetchAndSaveOrUpdateProducts([System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
                 serviceProvider = SetUp();
-        }
-
-        ~FetchAndSaveOrUpdateProducts()
-        {            
-            Dispose(false);
         }
 
         public ServiceProvider SetUp(params string[] args)
@@ -38,6 +40,8 @@ namespace Core.ScheduledTask
                .Build();
             ConfigureServices(serviceCollection, configuration);
             var _serviceProvider = serviceCollection.BuildServiceProvider();
+            logger = _serviceProvider.GetService<ILogger<FetchAndSaveOrUpdateProducts>>();
+            Result.Setup(cfg => { cfg.Logger = new ResultConfig.Logger(logger); });
             LogManager.AutoShutdown = true;
             return _serviceProvider;
             #endregion
@@ -61,13 +65,13 @@ namespace Core.ScheduledTask
                     logBuilder.AddNLog(configuration);
                 })
                 .AddMemoryCache()
-                .AddTransient<Thief>()
+                .AddTransient<ApiFetcher>()
                 .AddTransient<Scraper>()
                 .AddDbContext<StackGameContext>(b => b.UseSqlite(Constants.RELATIVE_PATH_SQL_LITE_BD))
                 .AddTransient<ParametersService>()
                 .AddHttpClient(Constants.HTTP_CLIENT_STACK_GAMER, c =>
                 {
-                    c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);
+                    c.BaseAddress = new Uri(stackGamerOption.Urls.BaseUrl);                    
                     c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.185 Mobile Safari/537.36");
                 });
         }
@@ -77,6 +81,22 @@ namespace Core.ScheduledTask
             return serviceProvider.GetService<ILogger<T>>();
         }
 
+        public async Task<Result> FetchAllCategoriesAndProducts() 
+        {
+            var prod =await serviceProvider.GetService<ApiFetcher>().GetProductById(1233);
+            var parameter = serviceProvider.GetService<ParametersService>().GetParameter("asdsadas");
+            
+            var TIM = prod.HasError<TimeOutError>();
+            var TIM2 = prod.HasError<JsonInvalidError>();
+            
+            
+            return Result.Ok();
+        }
+
+        ~FetchAndSaveOrUpdateProducts()
+        {
+            Dispose(false);
+        }
         public void Dispose()
         {
             Dispose(true);

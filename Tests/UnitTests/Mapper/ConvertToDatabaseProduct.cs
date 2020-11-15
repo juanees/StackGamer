@@ -1,7 +1,7 @@
 ﻿using Core.Mapper;
 using Fetcher;
 using Fetcher.Model;
-using Fetcher.Model.Thief;
+using Fetcher.Model.ApiFetcher;
 using NUnit.Framework;
 
 namespace Tests.UnitTests.Mapper
@@ -10,12 +10,12 @@ namespace Tests.UnitTests.Mapper
     [TestFixture]
     public class ConvertToDatabaseProduct
     {
-        private Product _product;
+        private ApiFetcherProduct _product;
 
         [SetUp]
         public void SetUp()
         {
-            _product = new Product()
+            _product = new ApiFetcherProduct()
             {
                 Name = "  test TEST ñ 🤡 ",
                 Saleable = null,

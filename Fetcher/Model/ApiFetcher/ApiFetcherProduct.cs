@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Fetcher.Model.Thief
+namespace Fetcher.Model.ApiFetcher
 {
-    public class Product
+    public class ApiFetcherProduct
     {
         public class Image
         {

@@ -1,8 +1,11 @@
 ﻿using Database;
 using Database.Model;
+using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Services.Errors.ParametersService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +29,22 @@ namespace Services
 
             SetParameters();
         }
-
-        public Parameter GetParameter(string key)
+                
+        public Result<Parameter> GetParameter(string key)
         {
-            if (!memoryCache.TryGetValue<List<Parameter>>(PARAMETERS_KEY, out var parameters))
+            try
             {
-                parameters = SetParameters();
+                if (!memoryCache.TryGetValue<List<Parameter>>(PARAMETERS_KEY, out var parameters))
+                {
+                    parameters = SetParameters();
+                }
+                var parameter = parameters.FirstOrDefault(p => p.Key == key);
+                return (parameter == default ? Result.Fail(new ParameterNotFoundError($"Parameter not found with key: {key}",key)).Log() : Result.Ok(parameter));
             }
-            return parameters.FirstOrDefault(p => p.Key == key);
+            catch (Exception e)
+            {
+                return Result.Fail(new FetchingParameterError("Error fetching parameters: "+ e.Message).CausedBy(e)).Log();
+            }
         }
 
         private List<Parameter> SetParameters()
@@ -42,7 +53,7 @@ namespace Services
             {
                 MemoryCacheEntryOptions cacheEntryOptions = CreateEntryOptions();
 
-                parameters = stackGameContext.Parameters.ToList();
+                parameters = stackGameContext.Parameters.AsNoTracking().ToList();
 
                 //add cache Item with options of callback
                 memoryCache.Set(PARAMETERS_KEY, parameters, cacheEntryOptions);
