@@ -59,7 +59,7 @@ namespace Core.ScheduledTask
 
             var loggingOption = new LoggingOption();
             configuration.Bind("Logging", loggingOption);
-
+            var connectionString = configuration.GetConnectionString("stack-gamer");
             services
                 .AddLogging(logBuilder =>
                 {
@@ -70,7 +70,7 @@ namespace Core.ScheduledTask
                 .AddMemoryCache()
                 .AddTransient<ApiFetcher>()
                 .AddTransient<Scraper>()
-                .AddDbContext<StackGameContext>(b => b.UseSqlite(Constants.RELATIVE_PATH_SQL_LITE_BD))
+                .AddDbContext<StackGameContext>(b => b.UseSqlServer(connectionString))
                 .AddTransient<ParametersService>()
                 .AddHttpClient(Constants.HTTP_CLIENT_STACK_GAMER, c =>
                 {
@@ -86,16 +86,16 @@ namespace Core.ScheduledTask
 
         public async Task<Result> FetchAllCategoriesAndProducts() 
         {
-            var prod =await serviceProvider.GetService<ApiFetcher>().GetProductById(1233);
+            //var prod =await serviceProvider.GetService<ApiFetcher>().GetProductById(1233);
 
-            await serviceProvider.GetService<ApiFetcher>().GetProductById(12);
+            //await serviceProvider.GetService<ApiFetcher>().GetProductById(12);
 
-            var parameter = serviceProvider.GetService<ParametersService>().GetParameterAsync("asdsadas");
+            var parameter = await serviceProvider.GetService<ParametersService>().GetParameterAsync("asdsadas");
 
             var parameter2 = await serviceProvider.GetService<ParametersService>().GetParameterAsync(Shared.Common.ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
 
-            var TIM = prod.HasError<TimeOutError>();
-            var TIM2 = prod.HasError<JsonInvalidError>();
+            //var TIM = prod.HasError<TimeOutError>();
+            //var TIM2 = prod.HasError<JsonInvalidError>();
             
             
             return Result.Ok();
