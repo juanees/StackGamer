@@ -27,7 +27,6 @@ namespace Services
             memoryCache = _memoryCache;
             logger = _logger;
             stackGameContext = _stackGameContext;
-            //SetParameters();
         }
 
         /// <summary>
@@ -76,49 +75,9 @@ namespace Services
             return stackGameContext.Parameters.AsNoTracking().ToListAsync();
         }
 
-        //private List<Parameter> SetParameters()
-        //{
-        //    if (!memoryCache.TryGetValue<List<Parameter>>(PARAMETERS_KEY, out var parameters))
-        //    {
-        //        MemoryCacheEntryOptions cacheEntryOptions = CreateEntryOptions();
-
-        //        //AsNoTracking to not waste resources as the parameters doesnt needs to be tracked
-        //        parameters = stackGameContext.Parameters.AsNoTracking().ToList();
-
-        //        //add cache Item with options of callback
-        //        memoryCache.Set(PARAMETERS_KEY, parameters, cacheEntryOptions);
-
-        //        logger.LogInformation("Parameters seted");
-        //    }
-        //    return parameters;
-        //}
-
-        //private MemoryCacheEntryOptions CreateEntryOptions()
-        //{
-        //    // set item with token expiration and callback
-        //    TimeSpan expirationMinutes = System.TimeSpan.FromMinutes(EXPIRATION_MINUTES);
-        //    var expirationTime = DateTime.Now.Add(expirationMinutes);
-        //    var expirationToken = new CancellationChangeToken(
-        //        new CancellationTokenSource(TimeSpan.FromMinutes(EXPIRATION_MINUTES)).Token);
-
-        //    // Create cache item which executes call back function
-        //    var cacheEntryOptions = new MemoryCacheEntryOptions()
-        //   // Pin to cache.
-        //   .SetPriority(Microsoft.Extensions.Caching.Memory.CacheItemPriority.Normal)
-        //   // Set the actual expiration time
-        //   .SetAbsoluteExpiration(expirationTime)
-        //   // Force eviction to run
-        //   .AddExpirationToken(expirationToken)
-        //   // Add eviction callback
-        //   .RegisterPostEvictionCallback(callback: CacheItemRemoved);
-        //    return cacheEntryOptions;
-        //}
-
         private void CacheItemRemoved(object key, object value, EvictionReason reason, object state)
         {
             logger.LogTrace(key + " " + value + " removed from cache due to:" + reason);
-            //if (reason != EvictionReason.Replaced)
-            //    SetParameters();
         }
     }
 }

@@ -15,13 +15,16 @@ namespace Database
         public DbSet<Audit> Audits { get; set; }
         public DbSet<Parameter> Parameters { get; set; }
 
-        public StackGameContext(DbContextOptions<StackGameContext> options) : base(options)
-        {
+        /*
+         * * Add-Migration InitialCreate
+         * * Update-Database
+        */
 
-        }
+        public StackGameContext(DbContextOptions<StackGameContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Parameter>().HasData(
                 new Parameter()
                 {
@@ -65,7 +68,7 @@ namespace Database
                 .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
             var date = DateTime.Now;
             foreach (var entityEntry in entries)
-            {                
+            {
                 ((BaseEntity)entityEntry.Entity).UpdatedDate = date;
 
                 if (entityEntry.State == EntityState.Added)
@@ -103,7 +106,7 @@ namespace Database
             }
             //Saves the changes, adding UpdatedDate and CreatedDate
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            
+
             //Saves to the table Audits all the changes ocurred in this operation
             await OnAfterSaveChanges(auditEntries);
 
@@ -202,7 +205,3 @@ namespace Database
         }
     }
 }
-/*
- * Add-Migration InitialCreate
- * Update-Database
- */

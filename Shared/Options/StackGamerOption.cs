@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 
 namespace Shared.Options
 {
-    
     public class StackGamerOption
     {
         public Urls Urls { get; set; }
