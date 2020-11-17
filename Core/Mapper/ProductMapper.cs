@@ -21,10 +21,10 @@ namespace Core.Mapper
                 Code = product.Code,
                 BrandId = product.BrandId,
                 CategoryId = product.SubCategoryId,
-                SpecialPrice = (product.SpecialPrice ?? 0) / 100,
-                PreviousSpecialPrice = (product.PreviousSpecialPrice ?? 0) / 100,
-                ListPrice = (product.ListPrice ?? 0) / 100,
-                PreviousListPrice = (product.PreviousListPrice ?? 0) / 100
+                //SpecialPrice = (product.SpecialPrice ?? 0) / 100,
+                //PreviousSpecialPrice = (product.PreviousSpecialPrice ?? 0) / 100,
+                //ListPrice = (product.ListPrice ?? 0) / 100,
+                //PreviousListPrice = (product.PreviousListPrice ?? 0) / 100
             };
         }
     }

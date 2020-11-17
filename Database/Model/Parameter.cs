@@ -8,9 +8,6 @@ namespace Database.Model
 {
     public class Parameter : BaseEntity
     {
-        [Key]
-        public int ParameterId { get; set; }
-
         public string Key { get; set; }
 
         public string Value { get; set; }
