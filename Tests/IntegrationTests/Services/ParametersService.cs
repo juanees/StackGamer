@@ -20,7 +20,7 @@ namespace Tests.IntegrationTests.Services
             DbContextOptions<StackGameContext> options = GenerateDbContextOptions();
             Parameter parameter = new()
             {
-                ParameterId = 988,
+                Id = 988,
                 Key = "test_parameter",
                 Description = "Test parameter in memory database",
                 Value = "Working!!!"
@@ -44,7 +44,7 @@ namespace Tests.IntegrationTests.Services
             Assert.IsFalse(result.IsFailed);
             Assert.IsNotNull(parameterRetrived);
 
-            Assert.AreEqual(parameter.ParameterId, parameterRetrived.ParameterId);
+            Assert.AreEqual(parameter.Id, parameterRetrived.Id);
             Assert.AreEqual(parameter.Description, parameterRetrived.Description);
             Assert.AreEqual(parameter.Value, parameterRetrived.Value);
         } 
