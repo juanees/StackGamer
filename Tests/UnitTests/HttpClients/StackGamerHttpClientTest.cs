@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Tests.UnitTests.HttpClients
 {
     [TestFixture]
-    public class StackGamer
+    public class StackGamerHttpClientTest
     {
         [Test]
         public async Task HttpClients_StackGamer_Should_Return_Http_Status_Code_And_Json_String()

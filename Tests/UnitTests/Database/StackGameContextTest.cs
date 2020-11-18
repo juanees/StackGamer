@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Tests.UnitTests.Database
 {
     [TestFixture]
-    public class StackGameContext
+    public class StackGameContextTest
     {
         [Test]
         public async Task Database_StackGameContext_Category_Should_Be_Added()
