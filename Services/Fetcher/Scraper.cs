@@ -1,6 +1,4 @@
-﻿using Database;
-using Fetcher.Model.Scraper;
-
+﻿using Fetcher.Model.Scraper;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -26,7 +24,7 @@ namespace Fetcher
         private string CATEGORIES_URL_VALIDATION_REGEX;
         private string PRODUCT_ID_FROM_URL_REGEX;
 
-        public Scraper(IOptions<StackGamerOption> _stackGamerOptions, ILogger<Scraper> _logger, IOptions<> parametros, ParametersService _parametersService)
+        public Scraper(IOptions<StackGamerOption> _stackGamerOptions, ILogger<Scraper> _logger, ParametersService _parametersService)
         {
             logger = _logger;
             stackGamerOptions = _stackGamerOptions;
@@ -38,19 +36,19 @@ namespace Fetcher
             Result<Database.Model.Parameter> resultParam = await parametersService.GetParameterAsync(ParametersKeys.CATEGORIES_URL_VALIDATION_REGEX);
             if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
             else CATEGORIES_URL_VALIDATION_REGEX = resultParam.Value.Value;
-            
+
             logger.LogTrace("CATEGORIES_URL_VALIDATION_REGEX: " + CATEGORIES_URL_VALIDATION_REGEX);
 
             resultParam = await parametersService.GetParameterAsync(ParametersKeys.PRODUCT_ID_FROM_URL_REGEX);
             if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
             else PRODUCT_ID_FROM_URL_REGEX = resultParam.Value.Value;
-            
+
             logger.LogTrace("PRODUCT_ID_FROM_URL_REGEX: " + PRODUCT_ID_FROM_URL_REGEX);
 
             logger.LogInformation("Parameters fetched");
 
             List<ScraperCategory> categories = new List<ScraperCategory>();
-            Result result=new Result();
+            Result result = new Result();
             try
             {
                 logger.LogInformation("Scraping web..");
@@ -167,25 +165,28 @@ namespace Fetcher
                     }
                 }
                 logger.LogTrace("********************************************************************************************");
+               
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 logger.LogError(e, "Error scraping {0}", stackGamerOptions.Value.Urls.CategoriesUrl);
                 categories = new List<ScraperCategory>();
-                
             }
 
             logger.LogInformation("{0} categories scrapped", categories.Count);
-            logger.LogInformation("{0} products scrapped", categories.Sum(x=>x.Products.Count));
+            logger.LogInformation("{0} products scrapped", categories.Sum(x => x.Products.Count));
             logger.LogInformation("Scraping finished");
-            result = Result.Merge(result, Result.Ok(categories));
-            return result;
+            
+            if (result.IsFailed)
+                return result;
+
+            return Result.Ok(categories);
         }
 
         private async Task Delay()
         {
             Random rnd = new Random();
-            var ms = rnd.Next(500, 2000);
+            var ms = rnd.Next(500, 501);
             TimeSpan waitTime = new TimeSpan(0, 0, 0, 0, ms);
             logger.LogTrace("Wating {0} seconds between requests", waitTime.TotalSeconds);
             await Task.Delay(Convert.ToInt32(waitTime.TotalMilliseconds));
@@ -196,7 +197,7 @@ namespace Fetcher
         {
             [JsonProperty("desc")]
             public string Description { get; set; }
-            
+
             [JsonProperty("url")]
             public string Url { get; set; }
         }
@@ -204,7 +205,7 @@ namespace Fetcher
         {
             [JsonProperty("url")]
             public string Url { get; set; }
-            
+
             [JsonProperty("name")]
             public string Name { get; set; }
         }

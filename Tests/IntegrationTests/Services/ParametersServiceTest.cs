@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Tests.IntegrationTests.Services
 {
     [TestFixture]
-    public class ParametersService
+    public class ParametersServiceTest
     {
         [Test]
         public async Task Services_ParametersService_Should_Return_Parameter()

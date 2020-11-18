@@ -1,9 +1,11 @@
-﻿using FluentResults;
+﻿using Database.Model;
+using FluentResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Services;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,14 +28,14 @@ namespace Core.ScheduledTask
         {
             try
             {
-
                 logger.LogInformation("FetchAndSaveOrUpdateProducts is Starting");
 
+                var productsService = GetAllDependencies();
+                //Scrap all the categories and products
+                logger.LogInformation("Scrapping all the categories and products");
+                var categoriesAndProducts = await productsService.ScrapAllCategoriesAndProductsAsync();
 
-                var  productsService = GetAllDependencies();
-
-                //List<Category> cats = productsService.GetAllCategories();
-
+                categoriesAndProducts.Log();
 
                 return;
             }

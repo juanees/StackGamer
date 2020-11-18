@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Tests.IntegrationTests.Fetcher
 {
     [TestFixture]
-    public class ApiFetcher
+    public class ApiFetcherTest
     {
         private IOptions<StackGamerOption> someOptions;
 

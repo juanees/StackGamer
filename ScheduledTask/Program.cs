@@ -64,7 +64,7 @@ namespace ScheduledTask
                     })
                     .UseConsoleLifetime()
                     .Build();
-
+                
                 LogManager.AutoShutdown = true;
 
                 await host.RunAsync(token);
