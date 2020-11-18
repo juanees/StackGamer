@@ -9,7 +9,6 @@ using Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,9 +57,9 @@ namespace Services
                 #endregion Parameters
 
                 var categories = categoriesResult.Value;
-                 foreach (var scrapedCategory in categories)
+                foreach (var scrapedCategory in categories)
                 {
-                    logger.LogInformation("Getting product from scraped category: " + JsonSerializer.Serialize(scrapedCategory));
+                    logger.LogInformation("Getting product from scraped category {0}", scrapedCategory.Description);
                     var category = unitOfWork.CategoryRepository.Get(c => c.ExternalCategoryId == scrapedCategory.CategoryId, null, nameof(Category.Products)).FirstOrDefault();
 
                     if (category is null)
@@ -80,26 +79,28 @@ namespace Services
                         unitOfWork.CategoryRepository.Update(category);
                     }
 
+                    unitOfWork.Save();
+
                     foreach (var scrapedProduct in scrapedCategory.Products)
                     {
-                        logger.LogInformation("product: " + JsonSerializer.Serialize(scrapedProduct));
+                        logger.LogInformation("Saving {0}", scrapedProduct.Name);
                         currentTry = 0;
-                        logger.LogInformation("currentTry: " + currentTry);
+                        logger.LogDebug("currentTry: " + currentTry);
                         while (currentTry < MaxQueriesPerProduct)
                         {
                             var productApiResult = await apiFetcher.GetProductById(scrapedProduct.ProductId);
                             productApiResult.Log();
                             if (productApiResult.IsFailed)
                             {
-                                logger.LogInformation(string.Format("Could not get product from api on iteration {0}", currentTry + 1));
+                                logger.LogError(string.Format("Could not get product {0} from api on iteration {1}", scrapedProduct.Name, currentTry + 1));
                                 Thread.Sleep(new TimeSpan(0, 0, TimeBetweenQueries));
                                 currentTry++;
-                                logger.LogInformation("currentTry: " + currentTry);
+                                logger.LogDebug("currentTry: " + currentTry);
                                 continue;
                             }
 
                             productApi = productApiResult.Value;
-                            logger.LogInformation("productApi: " + JsonSerializer.Serialize(productApi));
+                            logger.LogInformation("productApi: {0}", productApi.Name);
 
                             var prod = category.Products.FirstOrDefault(x => x.ExternalProductId == scrapedProduct.ProductId);
                             if (prod is null)
@@ -130,21 +131,20 @@ namespace Services
 
                             prod.Prices.Add(new ProductPrice()
                             {
-                                ListPrice = (productApi.ListPrice ?? 0) / 100,
-                                PreviousListPrice = (productApi.PreviousListPrice ?? 0) / 100,
-                                PreviousSpecialPrice = (productApi.PreviousSpecialPrice ?? 0) / 100,
-                                SpecialPrice = (productApi.SpecialPrice ?? 0) / 100,
+                                ListPrice = (productApi.ListPrice ?? 0),
+                                PreviousListPrice = (productApi.PreviousListPrice ?? 0),
+                                PreviousSpecialPrice = (productApi.PreviousSpecialPrice ?? 0),
+                                SpecialPrice = (productApi.SpecialPrice ?? 0),
                                 Product = prod
                             });
 
                             unitOfWork.CategoryRepository.Update(category);
-
+                            unitOfWork.Save();
                             currentTry = MaxQueriesPerProduct;
-                            logger.LogInformation("currentTry: " + currentTry);
                         }
                     }
                 }
-                unitOfWork.Save();
+
                 return Result.Ok();
             }
             catch (Exception e)

@@ -15,7 +15,7 @@ namespace Database
     {
         public StackGameContext CreateDbContext(string[] args)
         {
-            var appSettingPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(),"../Core"));
+            var appSettingPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../ScheduledTask"));
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(appSettingPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

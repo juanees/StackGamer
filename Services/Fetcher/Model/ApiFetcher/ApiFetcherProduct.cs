@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Database.Model;
+using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Fetcher.Model.ApiFetcher
@@ -84,5 +86,6 @@ namespace Fetcher.Model.ApiFetcher
 
         [JsonPropertyName("incluidos")]
         public object Included { get; set; }
+
     }
 }

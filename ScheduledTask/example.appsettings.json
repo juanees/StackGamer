@@ -19,7 +19,8 @@
       "Microsoft.AspNetCore.Routing": "Information", //Route matching information.
       "Microsoft.AspNetCore.Server": "Warning", //Connection start, stop, and keep alive responses. HTTPS certificate information.
       "Microsoft.AspNetCore.StaticFiles": "Warning", //Files served.
-      "Microsoft.EntityFrameworkCore": "Information" //General Entity Framework Core diagnostics. Database activity and configuration, change detection, migrations.
+      "Microsoft.EntityFrameworkCore": "Information", //General Entity Framework Core diagnostics. Database activity and configuration, change detection, migrations.
+      "Microsoft.Extensions.Http.Logging": "Information"
     }
   },
   "ConnectionStrings": {
