@@ -25,7 +25,7 @@ namespace Tests.IntegrationTests.Fetcher
         {
             someOptions = Options.Create(new StackGamerOption()
             {
-                Urls = new Urls()
+                Urls = new StackGamerOption.UrlsOption()
                 {
                     BaseUrl = "https://test.com",
                     GetProductByIdUrl = "/test/get_product_by_id_url?id_producto="

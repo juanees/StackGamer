@@ -1,0 +1,29 @@
+{
+  "StackGamerOption": {
+    "Urls": {
+      "BaseUrl": "PUT BASE URL HERE",
+      "GetProductByIdUrl": "PUT ROUTE HERE",
+      "CategoriesUrl": "PUT COMPLETE URL HERE"
+    }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+      "Microsoft.AspNetCore": "Information", //General ASP.NET Core diagnostics.
+      "Microsoft.AspNetCore.DataProtection": "Warning", //Which keys were considered, found, and used.
+      "Microsoft.AspNetCore.HostFiltering": "Information", //Hosts allowed.
+      "Microsoft.AspNetCore.Hosting": "Information", //How long HTTP requests took to complete and what time they started. Which hosting startup assemblies were 
+      "aded.": null,
+      "Microsoft.AspNetCore.Mvc": "Information", //MVC and Razor diagnostics. Model binding, filter execution, view compilation, action selection.
+      "Microsoft.AspNetCore.Routing": "Information", //Route matching information.
+      "Microsoft.AspNetCore.Server": "Warning", //Connection start, stop, and keep alive responses. HTTPS certificate information.
+      "Microsoft.AspNetCore.StaticFiles": "Warning", //Files served.
+      "Microsoft.EntityFrameworkCore": "Information" //General Entity Framework Core diagnostics. Database activity and configuration, change detection, migrations.
+    }
+  },
+  "ConnectionStrings": {
+    "stack-gamer": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=StackGamer;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;"
+  }
+}
