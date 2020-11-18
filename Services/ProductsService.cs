@@ -31,7 +31,7 @@ namespace Services
             this.apiFetcher = apiFetcher;
         }
 
-        public async Task<Result> ScrapAllCategoriesAndProductsAsync()
+        public async Task<Result> UpdateCategoriesAndProductsInformation()
         {
             var currentTry = 0;
             var productApi = new ApiFetcherProduct();
@@ -60,7 +60,7 @@ namespace Services
                 foreach (var scrapedCategory in categories)
                 {
                     logger.LogInformation("Getting product from scraped category {0}", scrapedCategory.Description);
-                    var category = unitOfWork.CategoryRepository.Get(c => c.ExternalCategoryId == scrapedCategory.CategoryId, null, nameof(Category.Products)).FirstOrDefault();
+                    var category = unitOfWork.CategoryRepository.Get(c => c.ExternalCategoryId == scrapedCategory.CategoryId, null, string.Join(",",nameof(Category.Products))).FirstOrDefault();
 
                     if (category is null)
                     {
@@ -102,7 +102,9 @@ namespace Services
                             productApi = productApiResult.Value;
                             logger.LogInformation("productApi: {0}", productApi.Name);
 
-                            var prod = category.Products.FirstOrDefault(x => x.ExternalProductId == scrapedProduct.ProductId);
+
+                            var prod = unitOfWork.ProductRepository.Get(c => c.ExternalProductId == scrapedProduct.ProductId, null, string.Join(",", nameof(Product.Prices))).FirstOrDefault();
+
                             if (prod is null)
                             {
                                 prod = new Product()

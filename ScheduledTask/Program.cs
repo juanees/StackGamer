@@ -1,19 +1,18 @@
 namespace ScheduledTask
 {
     using Core;
-    using Fetcher;
+    using Core.ScheduledTask;
+    using FluentResults;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using NLog;
     using NLog.Extensions.Logging;
-    using Services;
     using Shared.Common;
     using Shared.Options;
     using System;
     using System.IO;
-    using System.Threading;
     using System.Threading.Tasks;
 
     public class Program
@@ -27,9 +26,6 @@ namespace ScheduledTask
         {
             try
             {
-                CancellationTokenSource source = new CancellationTokenSource();
-                CancellationToken token = source.Token;
-
                 var host = new HostBuilder()
                     .ConfigureAppConfiguration((hostContext, configApp) =>
                     {
@@ -51,7 +47,8 @@ namespace ScheduledTask
                         .AddProductsService()
                         .AddUnitOfWork()
                         .Configure<StackGamerOption>(hostContext.Configuration.GetSection(nameof(StackGamerOption)))
-                        .AddHostedService<Core.ScheduledTask.FetchAndSaveOrUpdateProducts>()
+                        //.AddSingleton<IHostedService,Core.ScheduledTask.FetchAndSaveOrUpdateProducts>()
+                        .AddTransient<FetchAndSaveOrUpdateProducts>()
                         .AddDatabase(hostContext.Configuration.GetConnectionString("stack-gamer"))
                         .AddHttpClient(Constants.HTTP_CLIENT_STACK_GAMER, hostContext.Configuration.GetSection("StackGamerOption:Urls:BaseUrl").Value);
                     })
@@ -64,14 +61,35 @@ namespace ScheduledTask
                     })
                     .UseConsoleLifetime()
                     .Build();
-                
+
                 LogManager.AutoShutdown = true;
 
-                await host.RunAsync(token);
+                using (var serviceScope = host.Services.CreateScope())
+                {
+                    var services = serviceScope.ServiceProvider;
+                    ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
+                    Result.Setup(cfg => cfg.Logger = new Core.ResultConfig.Logger(logger));
+                    try
+                    {
+                        var task = services.GetRequiredService<FetchAndSaveOrUpdateProducts>();
+
+                        await task.ExecuteAsync();
+                        
+                        logger.LogInformation("Success");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger?.LogError(ex,"Error Occured");
+                    }
+                }
+                LogManager.Shutdown();
+
+                //host.Run();
             }
             catch (Exception)
             {
-            }            
+                LogManager.Shutdown();
+            }
         }
     }
 }

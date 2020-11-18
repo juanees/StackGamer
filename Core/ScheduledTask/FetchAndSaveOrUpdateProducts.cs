@@ -1,82 +1,35 @@
-﻿using Database.Model;
-using FluentResults;
+﻿using FluentResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Services;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Core.ScheduledTask
 {
-    public class FetchAndSaveOrUpdateProducts : IHostedService
+    public class FetchAndSaveOrUpdateProducts 
     {
         private readonly ILogger<FetchAndSaveOrUpdateProducts> logger;
-        private readonly IServiceProvider serviceProvider;
-        //private readonly CancellationToken cancellationToken;
+        private readonly ProductsService productsService;
+        
 
-        public FetchAndSaveOrUpdateProducts(ILogger<FetchAndSaveOrUpdateProducts> logger, IServiceProvider serviceProvider)
+        public FetchAndSaveOrUpdateProducts(ILogger<FetchAndSaveOrUpdateProducts> logger, ProductsService productsService)
         {
             this.logger = logger;
-            this.serviceProvider = serviceProvider;
-            Result.Setup(cfg => cfg.Logger = new ResultConfig.Logger(logger));
+            this.productsService = productsService;
+            
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task ExecuteAsync()
         {
-            try
-            {
-                logger.LogInformation("FetchAndSaveOrUpdateProducts is Starting");
-
-                var productsService = GetAllDependencies();
-                //Scrap all the categories and products
-                logger.LogInformation("Scrapping all the categories and products");
-                var categoriesAndProducts = await productsService.ScrapAllCategoriesAndProductsAsync();
-
-                categoriesAndProducts.Log();
-
-                return;
-            }
-            catch (OperationCanceledException)
-            {
-
-            }
-            catch (ObjectDisposedException)
-            {
-
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, e.Message);
-
-                throw;
-            }
-            finally
-            {
-                var source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                CancellationToken tkn = source.Token;
-                tkn.Register(() => { logger.LogInformation("FetchAndSaveOrUpdateProducts is Stopping"); });
-                source.Cancel();
-                tkn.ThrowIfCancellationRequested();
-            }
-        }
-
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
+            logger.LogInformation("FetchAndSaveOrUpdateProducts is Starting");                      
+            //Scrap all the categories and products
+            logger.LogInformation("Scrapping all the categories and products");
+            (await productsService.UpdateCategoriesAndProductsInformation()).Log();
             logger.LogInformation("FetchAndSaveOrUpdateProducts is Stopping");
-
-            return;
+            
         }
-
-        private ProductsService GetAllDependencies()
-        {
-            var productsService = serviceProvider.GetRequiredService<ProductsService>();
-
-            return productsService;
-        }
-
     }
 }
