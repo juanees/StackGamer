@@ -11,7 +11,7 @@ namespace Database
     {
         private readonly StackGameContext context;
         private GenericRepository<Category> categoryRepository;
-        private GenericRepository<Product> productRepository;
+        //private GenericRepository<Product> productRepository;
 
         public UnitOfWork(StackGameContext _context)
         {
@@ -30,18 +30,18 @@ namespace Database
             }
         }
 
-        public GenericRepository<Product> ProductRepository
-        {
-            get
-            {
+        //public GenericRepository<Product> ProductRepository
+        //{
+        //    get
+        //    {
 
-                if (this.productRepository == null)
-                {
-                    this.productRepository = new GenericRepository<Product>(context);
-                }
-                return productRepository;
-            }
-        }
+        //        if (this.productRepository == null)
+        //        {
+        //            this.productRepository = new GenericRepository<Product>(context);
+        //        }
+        //        return productRepository;
+        //    }
+        //}
 
         public void Save()
         {
