@@ -5,7 +5,7 @@ Set the Database project as the startup project, in the Package Manager Console 
 Add-Migration InitialCreate
 Update-Database
 ```
-If the database needs to be updated, the Migrations folder and the .db file must be deleted before.
+If the database needs to be updated, the Migrations folder could be deleted before. 
 ## Configuration variables
 Copy example.appsettings.json and rename it to appsettings.json.
 
