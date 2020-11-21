@@ -9,7 +9,7 @@ using Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Services
@@ -33,10 +33,9 @@ namespace Services
 
         public async Task<Result> UpdateCategoriesAndProductsInformation()
         {
-            var currentTry = 0;
             var productApi = new ApiFetcherProduct();
             int TimeBetweenQueries;
-            int MaxQueriesPerProduct;
+
             Result<Database.Model.Parameter> resultParam;
             try
             {
@@ -49,18 +48,13 @@ namespace Services
                 if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
                 else TimeBetweenQueries = Convert.ToInt32(resultParam.Value.Value);
                 logger.LogInformation("TimeBetweenQueries: " + TimeBetweenQueries);
-
-                resultParam = await parametersService.GetParameterAsync(ParametersKeys.MAX_QUERIES_PER_PRODUCT);
-                if (resultParam.IsFailed) throw new Exception(resultParam.Errors.Join());
-                else MaxQueriesPerProduct = Convert.ToInt32(resultParam.Value.Value);
-                logger.LogInformation("MaxQueriesPerProduct: " + MaxQueriesPerProduct);
                 #endregion Parameters
 
                 var categories = categoriesResult.Value;
                 foreach (var scrapedCategory in categories)
                 {
                     logger.LogInformation("Getting product from scraped category {0}", scrapedCategory.Description);
-                    var category = unitOfWork.CategoryRepository.Get(c => c.ExternalCategoryId == scrapedCategory.CategoryId, null, string.Join(",",nameof(Category.Products))).FirstOrDefault();
+                    var category = unitOfWork.CategoryRepository.Get(c => c.ExternalCategoryId == scrapedCategory.CategoryId, null, string.Join(",", nameof(Category.Products))).FirstOrDefault();
 
                     if (category is null)
                     {
@@ -83,25 +77,19 @@ namespace Services
 
                     foreach (var scrapedProduct in scrapedCategory.Products)
                     {
-                        logger.LogInformation("Saving {0}", scrapedProduct.Name);
-                        currentTry = 0;
-                        logger.LogDebug("currentTry: " + currentTry);
-                        while (currentTry < MaxQueriesPerProduct)
+                        logger.LogInformation("Saving {JsonScrapedProduct}", JsonSerializer.Serialize(scrapedProduct));
                         {
+                            logger.LogInformation("Saving {0}", scrapedProduct.Name);
                             var productApiResult = await apiFetcher.GetProductById(scrapedProduct.ProductId);
                             productApiResult.Log();
                             if (productApiResult.IsFailed)
                             {
-                                logger.LogError(string.Format("Could not get product {0} from api on iteration {1}", scrapedProduct.Name, currentTry + 1));
-                                Thread.Sleep(new TimeSpan(0, 0, TimeBetweenQueries));
-                                currentTry++;
-                                logger.LogDebug("currentTry: " + currentTry);
+                                logger.LogError(string.Format("Could not get product {0} from api on iteration", scrapedProduct.Name));
                                 continue;
                             }
 
                             productApi = productApiResult.Value;
                             logger.LogInformation("productApi: {0}", productApi.Name);
-
 
                             var prod = unitOfWork.ProductRepository.Get(c => c.ExternalProductId == scrapedProduct.ProductId, null, string.Join(",", nameof(Product.Prices))).FirstOrDefault();
 
@@ -142,7 +130,6 @@ namespace Services
 
                             unitOfWork.CategoryRepository.Update(category);
                             unitOfWork.Save();
-                            currentTry = MaxQueriesPerProduct;
                         }
                     }
                 }

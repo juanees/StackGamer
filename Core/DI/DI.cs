@@ -1,18 +1,15 @@
 ﻿using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
 using Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core
 {
     public static class DI
     {
-        public static IServiceCollection AddDatabase(this IServiceCollection serviceCollection, string connectionString) 
+        public static IServiceCollection AddDatabase(this IServiceCollection serviceCollection, string connectionString)
         {
             serviceCollection.AddDbContext<StackGameContext>(b => b.UseSqlServer(connectionString));
             return serviceCollection;
@@ -24,7 +21,20 @@ namespace Core
             {
                 c.BaseAddress = new Uri(baseUrl);
                 c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.185             7.36");
-            });
+                c.Timeout = TimeSpan.FromMinutes(1);
+
+            })
+                // Retry a specified number of times, using a function to 
+                // calculate the duration to wait between retries based on 
+                // the current retry attempt (allows for exponential backoff)
+                // In this case will wait for
+                //  2 ^ 1 = 2 seconds then
+                //  2 ^ 2 = 4 seconds then
+                //  2 ^ 3 = 8 seconds then
+                //  2 ^ 4 = 16 seconds then
+                //  2 ^ 5 = 32 seconds
+            .AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(5, retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
             return serviceCollection;
         }
 
