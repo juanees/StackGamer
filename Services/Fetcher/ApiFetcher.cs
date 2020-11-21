@@ -1,5 +1,4 @@
-﻿using Fetcher.Errors;
-using Fetcher.Errors.ApiFetcher;
+﻿using Fetcher.Errors.ApiFetcher;
 using Fetcher.Model.ApiFetcher;
 using FluentResults;
 using Microsoft.Extensions.Logging;
@@ -41,8 +40,8 @@ namespace Fetcher
             var httpClient = clientFactory.CreateClient(Constants.HTTP_CLIENT_STACK_GAMER);
 
             try
-            {                
-                var prod = await httpClient.GetFromJsonAsync<ApiFetcherProduct>(query);                
+            {
+                var prod = await httpClient.GetFromJsonAsync<ApiFetcherProduct>(query);
                 return Result.Ok(prod);
             }
             catch (HttpRequestException e) // Non success
